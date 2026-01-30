@@ -1,0 +1,7 @@
+{
+  "name": "NURA",
+  "description": "A minimalist lifestyle nutrition app focused on 'Feed the Flow'. Track meals, monitor macros, and share progress with an elegant aesthetic.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
