@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppView } from '../types';
+import { AppView } from './types';
 
 interface LayoutProps {
   children: React.ReactNode;
