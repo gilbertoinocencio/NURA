@@ -25,13 +25,13 @@ npm install
 npm run dev
 ```
 
-3. Acesse http://localhost:5173 no navegador
+3. Acesse http://localhost:3000 no navegador
 
 ## Troubleshooting
 
-- **Porta em uso**: Mate processos na porta 5173
+- **Porta em uso**: Mate processos na porta 3000
   ```bash
-  npx kill-port 5173
+  npx kill-port 3000
   ```
   
 - **Hot reload não funciona**: Reinicie o servidor
