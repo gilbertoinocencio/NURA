@@ -119,6 +119,37 @@ export interface Translations {
         };
     };
 
+    // Quarterly Plan
+    quarterlyPlan: {
+        feedTheFlow: string;
+        title: string;
+        yourPlan: string;
+        planDescription: string;
+        generateNow: string;
+        generating: string;
+        dailyKcal: string;
+        protein: string;
+        carbs: string;
+        fats: string;
+        journey3Months: string;
+        activatePlan: string;
+        startNow: string;
+        planActive: string;
+        viewProgress: string;
+        // Share
+        myFlow: string;
+        summaryOf: string;
+        flowConsistency: string;
+        days: string;
+        flow: string;
+        streak: string;
+        dailyAvg: string;
+        quarterlyGoal: string;
+        onTrack: string;
+        shareProgress: string;
+        noData: string;
+    };
+
     // Social
     social: {
         shareProgress: string;
@@ -249,6 +280,34 @@ export const translations: Record<Language, Translations> = {
                 performance: 'Performance',
             },
         },
+        quarterlyPlan: {
+            feedTheFlow: 'Feed the Flow',
+            title: 'AI Generated Plan',
+            yourPlan: 'Your Personalized Plan',
+            planDescription: 'NURA AI will analyze your profile, biotype, and goals to create a unique quarterly strategy.',
+            generateNow: 'Generate Plan Now',
+            generating: 'Generating Strategy...',
+            dailyKcal: 'Daily Kcal',
+            protein: 'Protein',
+            carbs: 'Carbohydrates',
+            fats: 'Fats',
+            journey3Months: '3-Month Journey',
+            activatePlan: 'Activate Quarterly Plan',
+            startNow: 'Start Now',
+            planActive: 'Plan Active',
+            viewProgress: 'View Progress',
+            myFlow: 'My NURA Flow',
+            summaryOf: 'Summary of',
+            flowConsistency: 'Flow Consistency',
+            days: 'Days',
+            flow: 'Flow',
+            streak: 'Streak',
+            dailyAvg: 'Daily Avg',
+            quarterlyGoal: 'Quarterly Goal',
+            onTrack: 'You are on track to reach your best version by the end of the quarter.',
+            shareProgress: 'Share Progress',
+            noData: 'No data yet',
+        },
         social: {
             shareProgress: 'Share Progress',
             download: 'Download',
@@ -373,6 +432,34 @@ export const translations: Record<Language, Translations> = {
                 performance: 'Performance',
             },
         },
+        quarterlyPlan: {
+            feedTheFlow: 'Feed the Flow',
+            title: 'Plano Gerado IA',
+            yourPlan: 'Seu Plano Personalizado',
+            planDescription: 'A IA Nura analisará seu perfil, biotipo e objetivos para criar uma estratégia trimestral única.',
+            generateNow: 'Gerar Plano Agora',
+            generating: 'Gerando Estratégia...',
+            dailyKcal: 'Kcal Diárias',
+            protein: 'Proteína',
+            carbs: 'Carboidratos',
+            fats: 'Gorduras',
+            journey3Months: 'Jornada de 3 Meses',
+            activatePlan: 'Ativar Plano Trimestral',
+            startNow: 'Começar Agora',
+            planActive: 'Plano Ativo',
+            viewProgress: 'Ver Progresso',
+            myFlow: 'My NURA Flow',
+            summaryOf: 'Resumo de',
+            flowConsistency: 'Consistência do Flow',
+            days: 'Dias',
+            flow: 'Flow',
+            streak: 'Streak',
+            dailyAvg: 'Média Diária',
+            quarterlyGoal: 'Meta Trimestral',
+            onTrack: 'Você está no caminho certo para atingir sua melhor versão até o final do trimestre.',
+            shareProgress: 'Compartilhar Progresso',
+            noData: 'Sem dados ainda',
+        },
         social: {
             shareProgress: 'Compartilhar Progresso',
             download: 'Baixar',
@@ -496,6 +583,34 @@ export const translations: Record<Language, Translations> = {
                 health: 'Salud',
                 performance: 'Rendimiento',
             },
+        },
+        quarterlyPlan: {
+            feedTheFlow: 'Feed the Flow',
+            title: 'Plan Generado IA',
+            yourPlan: 'Tu Plan Personalizado',
+            planDescription: 'La IA Nura analizará tu perfil, biotipo y objetivos para crear una estrategia trimestral única.',
+            generateNow: 'Generar Plan Ahora',
+            generating: 'Generando Estrategia...',
+            dailyKcal: 'Kcal Diarias',
+            protein: 'Proteína',
+            carbs: 'Carbohidratos',
+            fats: 'Grasas',
+            journey3Months: 'Jornada de 3 Meses',
+            activatePlan: 'Activar Plan Trimestral',
+            startNow: 'Comenzar Ahora',
+            planActive: 'Plan Activo',
+            viewProgress: 'Ver Progreso',
+            myFlow: 'My NURA Flow',
+            summaryOf: 'Resumen de',
+            flowConsistency: 'Consistencia del Flow',
+            days: 'Días',
+            flow: 'Flow',
+            streak: 'Racha',
+            dailyAvg: 'Promedio Diario',
+            quarterlyGoal: 'Meta Trimestral',
+            onTrack: 'Estás en el camino correcto para alcanzar tu mejor versión al final del trimestre.',
+            shareProgress: 'Compartir Progreso',
+            noData: 'Sin datos aún',
         },
         social: {
             shareProgress: 'Compartir Progreso',
