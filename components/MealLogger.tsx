@@ -162,7 +162,8 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
       setMessages(prev => [...prev, aiTextMsg, aiCardMsg]);
       setDraftMeal(result);
     } catch (e) {
-      const errorMsg: Message = { id: Date.now().toString(), type: 'ai-text', content: "Estou com dificuldade para conectar ao flow agora. Tente novamente." };
+      const errorMessage = e instanceof Error ? e.message : "Erro desconhecido";
+      const errorMsg: Message = { id: Date.now().toString(), type: 'ai-text', content: `Erro técnico: ${errorMessage}. (Verifique o Console)` };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
       setLoading(false);

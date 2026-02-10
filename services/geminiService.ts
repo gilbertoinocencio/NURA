@@ -12,7 +12,12 @@ const cleanJsonString = (str: string) => {
 const MODEL_NAME = "gemini-2.0-flash";
 
 export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
-  if (!apiKey) throw new Error("API Key missing");
+  console.log("Gemini Service: Checking API Key...");
+  if (!apiKey) {
+    console.error("Gemini Service: API Key is MISSING or empty.");
+    throw new Error("API Key configuration missing (Client-Side). Check VITE_GEMINI_API_KEY.");
+  }
+  console.log("Gemini Service: API Key present (Starts with " + apiKey.substring(0, 4) + ")");
 
   try {
     const model = genAI.getGenerativeModel({
