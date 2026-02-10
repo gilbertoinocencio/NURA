@@ -3,6 +3,8 @@ import { Meal, AIResponse } from '../types';
 import { analyzeTextLog, analyzeImageLog } from '../services/geminiService';
 import { PhotoScanResult } from './PhotoScanResult';
 import { USER_AVATAR } from '../constants';
+import { useAuth } from '../contexts/AuthContext';
+import { MealService } from '../services/mealService';
 import { useLanguage } from '../i18n';
 
 // Web Speech API type declarations
@@ -79,6 +81,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { t, speechLang } = useLanguage();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -188,22 +191,42 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
     reader.readAsDataURL(file);
   };
 
-  const handleConfirmLog = (data: AIResponse, type: 'ai-chat' | 'ai-photo' | 'ai-voice') => {
-    onLog({
-      id: Date.now().toString(),
-      name: data.foodName,
-      timestamp: new Date(),
-      calories: data.calories,
-      macros: {
-        protein: data.macros.p,
-        carbs: data.macros.c,
-        fats: data.macros.f
-      },
-      type: type,
-      items: data.items,
-      imageUri: type === 'ai-photo' && scannedImageUri ? scannedImageUri : undefined
-    });
-    onClose();
+  // Import useAuth
+  import { useAuth } from '../contexts/AuthContext';
+  import { MealService } from '../services/mealService';
+
+  // ... inside component
+  const { user } = useAuth();
+
+  const handleConfirmLog = async (data: AIResponse, type: 'ai-chat' | 'ai-photo' | 'ai-voice') => {
+    if (!user) return;
+
+    setLoading(true);
+    try {
+      const newMeal: Meal = {
+        id: Date.now().toString(),
+        name: data.foodName,
+        timestamp: new Date(),
+        calories: data.calories,
+        macros: {
+          protein: data.macros.p,
+          carbs: data.macros.c,
+          fats: data.macros.f
+        },
+        type: type,
+        items: data.items,
+        imageUri: type === 'ai-photo' && scannedImageUri ? scannedImageUri : undefined
+      };
+
+      await MealService.logMeal(newMeal, user.id);
+      onLog(newMeal); // Optimistic update / update parent state
+      onClose();
+    } catch (error) {
+      console.error('Failed to log meal:', error);
+      alert(t.mealLogger.errorLogging);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

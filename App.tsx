@@ -23,6 +23,8 @@ import { INITIAL_STATS } from './constants';
 
 import { useAuth } from './contexts/AuthContext';
 import { LoginView } from './components/LoginView';
+import { MealService } from './services/mealService';
+import { StatsService } from './services/statsService';
 
 const App: React.FC = () => {
   const { user, loading } = useAuth();
@@ -46,8 +48,29 @@ const App: React.FC = () => {
     setDarkMode(prev => !prev);
   };
 
+  // Fetch Stats on Load
+  useEffect(() => {
+    if (user) {
+      loadStats();
+    }
+  }, [user]);
+
+  const loadStats = async () => {
+    if (!user) return;
+    try {
+      const dailyStats = await StatsService.getDailyStats(user.id);
+      setStats(dailyStats);
+
+      const dailyMeals = await MealService.getMeals(user.id);
+      setMeals(dailyMeals);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
   const handleLogMeal = (meal: Meal) => {
-    setMeals([...meals, meal]);
+    // Optimistic Update
+    setMeals(prev => [meal, ...prev]);
     setStats(prev => ({
       ...prev,
       consumedCalories: prev.consumedCalories + meal.calories,
