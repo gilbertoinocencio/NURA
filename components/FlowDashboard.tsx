@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DailyStats, AppView } from '../types';
 import { USER_AVATAR } from '../constants';
 import { useLanguage } from '../i18n';
+import { GamificationService, GamificationStats } from '../services/gamificationService';
+import { useAuth } from '../contexts/AuthContext';
 
 interface FlowDashboardProps {
   stats: DailyStats;
@@ -25,7 +27,21 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   onToggleTheme
 }) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [period, setPeriod] = useState<PeriodTab>('week');
+  const [gameStats, setGameStats] = useState<GamificationStats | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      loadGameStats();
+    }
+  }, [user]);
+
+  const loadGameStats = async () => {
+    if (!user) return;
+    const stats = await GamificationService.updateStats(user.id);
+    setGameStats(stats);
+  };
 
   // Flow score calculated from consumed vs target (demo)
   const flowScore = stats.flowScore ?? 0;
@@ -38,6 +54,17 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   // Calorie progress for Day view
   const caloriePercent = Math.min((stats.consumedCalories / stats.targetCalories) * 100, 100);
 
+  const getLevelLabel = (level: string) => {
+    switch (level) {
+      case 'seed': return 'Semente';
+      case 'root': return 'Raiz';
+      case 'stem': return 'Caule';
+      case 'flower': return 'Flor';
+      case 'fruit': return 'Fruto';
+      default: return 'Semente';
+    }
+  };
+
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-nura-bg dark:bg-background-dark font-display text-nura-main dark:text-white animate-fade-in transition-colors duration-300">
 
@@ -49,10 +76,17 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
               className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-nura-petrol/20 dark:border-primary/20"
               style={{ backgroundImage: `url("${USER_AVATAR}")` }}
             />
-            <div className="absolute top-0 right-0 size-3 bg-red-500 rounded-full border-2 border-nura-bg dark:border-background-dark" />
+            {gameStats?.currentStreak && gameStats.currentStreak > 0 && (
+              <div className="absolute -bottom-1 -right-1 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white dark:border-background-dark flex items-center gap-0.5 animate-pulse">
+                <span className="material-symbols-outlined text-[10px]">local_fire_department</span>
+                {gameStats.currentStreak}
+              </div>
+            )}
           </div>
           <div className="flex flex-col">
-            <span className="text-xs text-nura-muted dark:text-slate-400 font-medium tracking-wide uppercase">{t.dashboard.welcomeBack}</span>
+            <span className="text-xs text-nura-muted dark:text-slate-400 font-medium tracking-wide uppercase">
+              {gameStats ? `Nível ${getLevelLabel(gameStats.level)}` : t.dashboard.welcomeBack}
+            </span>
             <h2 className="text-nura-main dark:text-white text-lg font-bold leading-tight">Alex</h2>
           </div>
         </div>
