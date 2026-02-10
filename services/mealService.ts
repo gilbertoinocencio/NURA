@@ -3,8 +3,49 @@ import { Meal, DailyStats } from '../types';
 import { INITIAL_STATS } from '../constants';
 
 export const MealService = {
+    // Upload image to Supabase Storage
+    async uploadMealImage(imageUri: string, userId: string): Promise<string | null> {
+        try {
+            // Convert Base64 URI to Blob
+            const response = await fetch(imageUri);
+            const blob = await response.blob();
+
+            const fileExt = 'jpg'; // Assume JPG for simplicity from camera/base64
+            const fileName = `${userId}/${Date.now()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('meal-photos')
+                .upload(filePath, blob);
+
+            if (uploadError) {
+                console.error('Error uploading image:', uploadError);
+                return null;
+            }
+
+            const { data } = supabase.storage
+                .from('meal-photos')
+                .getPublicUrl(filePath);
+
+            return data.publicUrl;
+        } catch (error) {
+            console.error('Error processing image upload:', error);
+            return null;
+        }
+    },
+
     // Save a meal to Supabase
     async logMeal(meal: Meal, userId: string): Promise<void> {
+        let imageUrl = meal.imageUri;
+
+        // If it's a base64 data URI (new photo), upload it
+        if (meal.imageUri && meal.imageUri.startsWith('data:')) {
+            const uploadedUrl = await this.uploadMealImage(meal.imageUri, userId);
+            if (uploadedUrl) {
+                imageUrl = uploadedUrl;
+            }
+        }
+
         const { error } = await supabase
             .from('meals')
             .insert({
@@ -16,7 +57,7 @@ export const MealService = {
                 fats: meal.macros.fats,
                 type: meal.type,
                 items: meal.items,
-                image_url: meal.imageUri, // Note: We should upload image first in a real scenario
+                image_url: imageUrl,
             });
 
         if (error) throw error;

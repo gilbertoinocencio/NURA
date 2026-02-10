@@ -14,15 +14,15 @@ export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: `You are NURA, a lifestyle nutrition coach focused on consistency and flow. Analyze this food log: "${text}". 
       Return a JSON object with:
       - foodName (string, overall summary name)
       - calories (number, total)
       - macros (object with p, c, f as numbers for protein, carbs, fats in grams)
       - items (array of objects with: name (string), quantity (string, e.g. '1 large', '100g'), calories (number))
-      - message (string, a short motivational phrase in Portuguese about maintaining the flow, e.g. "Boa refeição para manter o flow!", "Continue firme no seu ritmo!", "Energia constante!")
-      Approximate values if needed.`,
+      - message (string, a short motivational phrase in Portuguese about maintaining the flow, e.g. "Boa escolha para manter o flow!", "Nutrindo seu potencial.", "Energia limpa para o seu dia.")
+      Approximate values if needed. Keep the tone encouraging and scientific but accessible.`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -74,11 +74,11 @@ export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> 
     const data = base64Image.split(',')[1]; // Remove header
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image",
+      model: "gemini-1.5-flash",
       contents: {
         parts: [
           { inlineData: { mimeType, data } },
-          { text: "You are NURA, a lifestyle nutrition coach. Identify the food in this image. Return strict JSON: { \"foodName\": string, \"calories\": number, \"macros\": { \"p\": number, \"c\": number, \"f\": number }, \"items\": [{ \"name\": string, \"quantity\": string, \"calories\": number }], \"message\": string (a short motivational phrase in Portuguese like 'Boa escolha para manter o flow!') }." }
+          { text: "You are NURA, a lifestyle nutrition coach. Identify the food in this image. Return strict JSON: { \"foodName\": string, \"calories\": number, \"macros\": { \"p\": number, \"c\": number, \"f\": number }, \"items\": [{ \"name\": string, \"quantity\": string, \"calories\": number }], \"message\": string (short motivational phrase in Portuguese, e.g. 'Bela composição para o seu flow!') }." }
         ]
       }
     });

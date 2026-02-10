@@ -26,6 +26,7 @@ export interface DailyStats {
   targetCalories: number;
   macros: MacroData;
   targetMacros: MacroData;
+  flowScore?: number; // 0-100
 }
 
 export enum AppView {

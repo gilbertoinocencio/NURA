@@ -28,7 +28,7 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   const [period, setPeriod] = useState<PeriodTab>('week');
 
   // Flow score calculated from consumed vs target (demo)
-  const flowScore = Math.min(Math.round((stats.consumedCalories / stats.targetCalories) * 100), 100) || 89;
+  const flowScore = stats.flowScore ?? 0;
   const scoreIsOptimized = flowScore >= 75;
 
   // SVG gauge calculations
