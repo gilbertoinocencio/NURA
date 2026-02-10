@@ -21,7 +21,11 @@ import { Integrations } from './components/Integrations';
 import { AppView, DailyStats, Meal } from './types';
 import { INITIAL_STATS } from './constants';
 
+import { useAuth } from './contexts/AuthContext';
+import { LoginView } from './components/LoginView';
+
 const App: React.FC = () => {
+  const { user, loading } = useAuth();
   const [view, setView] = useState<AppView>(AppView.HOME);
   const [stats, setStats] = useState<DailyStats>(INITIAL_STATS);
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -55,6 +59,18 @@ const App: React.FC = () => {
     }));
     setView(AppView.HOME);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-nura-bg dark:bg-background-dark">
+        <div className="w-16 h-16 border-4 border-nura-petrol dark:border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginView />;
+  }
 
   return (
     <Layout
