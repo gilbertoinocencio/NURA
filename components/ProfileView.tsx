@@ -2,6 +2,7 @@ import React from 'react';
 import { AppView } from '../types';
 import { USER_AVATAR, LANGUAGES } from '../constants';
 import { useLanguage } from '../i18n';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ProfileViewProps {
   onNavClick: (view: AppView) => void;
@@ -17,6 +18,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onToggleTheme
 }) => {
   const { language, setLanguage, t } = useLanguage();
+  const { profile } = useAuth();
 
   // Generate mock heatmap data
   const renderHeatmap = () => {
@@ -83,15 +85,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="relative mb-4">
             <div
               className="bg-center bg-no-repeat bg-cover aspect-square rounded-full h-28 w-28 ring-4 ring-white dark:ring-[#1a2630] shadow-sm transition-all"
-              style={{ backgroundImage: `url("${USER_AVATAR}")` }}
+              style={{ backgroundImage: `url("${profile?.avatar_url || USER_AVATAR}")` }}
             >
             </div>
             <div className="absolute bottom-1 right-1 bg-nura-petrol dark:bg-primary text-white rounded-full p-1 border-2 border-white dark:border-[#101a22]">
               <span className="material-symbols-outlined block text-[16px] leading-none">check</span>
             </div>
           </div>
-          <h1 className="text-nura-main dark:text-white text-2xl font-bold leading-tight tracking-tight text-center">Alex</h1>
-          <p className="text-nura-muted dark:text-gray-400 text-sm font-medium mt-1">Membro desde Março 2023</p>
+          <h1 className="text-nura-main dark:text-white text-2xl font-bold leading-tight tracking-tight text-center">
+            {profile?.display_name || 'Usuário Nura'}
+          </h1>
+          <p className="text-nura-muted dark:text-gray-400 text-sm font-medium mt-1">
+            {profile?.goal ? t.profile.goals[profile.goal] : 'Defina seu perfil'}
+          </p>
         </section>
 
         {/* Language Selector */}

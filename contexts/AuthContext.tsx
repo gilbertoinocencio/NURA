@@ -7,6 +7,7 @@ interface AuthContextType {
     session: Session | null;
     profile: any | null;
     loading: boolean;
+    updateProfile: (updates: any) => Promise<void>;
     signInWithGoogle: () => Promise<void>;
     signOut: () => Promise<void>;
 }
@@ -57,6 +58,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const updateProfile = async (updates: any) => {
+        if (!user) return;
+        try {
+            const { ProfileService } = await import('../services/profileService');
+            const updatedProfile = await ProfileService.updateProfile(user.id, updates);
+            setProfile(updatedProfile);
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            throw error;
+        }
+    };
+
     const signInWithGoogle = async () => {
         try {
             const { error } = await supabase.auth.signInWithOAuth({
@@ -81,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, profile, loading, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, session, profile, loading, updateProfile, signInWithGoogle, signOut }}>
             {children}
         </AuthContext.Provider>
     );

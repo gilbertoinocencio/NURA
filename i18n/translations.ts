@@ -106,6 +106,11 @@ export interface Translations {
         notifications: string;
         about: string;
         logout: string;
+        goals: {
+            aesthetic: string;
+            health: string;
+            performance: string;
+        };
     };
 
     // Social
@@ -226,6 +231,11 @@ export const translations: Record<Language, Translations> = {
             notifications: 'Notifications',
             about: 'About',
             logout: 'Logout',
+            goals: {
+                aesthetic: 'Aesthetic',
+                health: 'Health',
+                performance: 'Performance',
+            },
         },
         social: {
             shareProgress: 'Share Progress',
@@ -339,6 +349,11 @@ export const translations: Record<Language, Translations> = {
             notifications: 'Notificações',
             about: 'Sobre',
             logout: 'Sair',
+            goals: {
+                aesthetic: 'Estética',
+                health: 'Saúde',
+                performance: 'Performance',
+            },
         },
         social: {
             shareProgress: 'Compartilhar Progresso',
@@ -452,6 +467,11 @@ export const translations: Record<Language, Translations> = {
             notifications: 'Notificaciones',
             about: 'Acerca de',
             logout: 'Cerrar Sesión',
+            goals: {
+                aesthetic: 'Estética',
+                health: 'Salud',
+                performance: 'Rendimiento',
+            },
         },
         social: {
             shareProgress: 'Compartir Progreso',
