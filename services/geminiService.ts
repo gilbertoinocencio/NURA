@@ -1,61 +1,70 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { AIResponse } from '../types';
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY || '';
+const genAI = new GoogleGenerativeAI(apiKey);
 
 // Helper to clean JSON string if Markdown code blocks are present
 const cleanJsonString = (str: string) => {
   return str.replace(/```json/g, '').replace(/```/g, '').trim();
 };
 
+const MODEL_NAME = "gemini-2.0-flash";
+
 export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
   if (!apiKey) throw new Error("API Key missing");
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: `You are NURA, a lifestyle nutrition coach focused on consistency and flow. Analyze this food log: "${text}". 
-      Return a JSON object with:
-      - foodName (string, overall summary name)
-      - calories (number, total)
-      - macros (object with p, c, f as numbers for protein, carbs, fats in grams)
-      - items (array of objects with: name (string), quantity (string, e.g. '1 large', '100g'), calories (number))
-      - message (string, a short motivational phrase in Portuguese about maintaining the flow, e.g. "Boa escolha para manter o flow!", "Nutrindo seu potencial.", "Energia limpa para o seu dia.")
-      Approximate values if needed. Keep the tone encouraging and scientific but accessible.`,
-      config: {
+    const model = genAI.getGenerativeModel({
+      model: MODEL_NAME,
+      generationConfig: {
         responseMimeType: "application/json",
         responseSchema: {
-          type: Type.OBJECT,
+          type: SchemaType.OBJECT,
           properties: {
-            foodName: { type: Type.STRING },
-            calories: { type: Type.NUMBER },
+            foodName: { type: SchemaType.STRING },
+            calories: { type: SchemaType.NUMBER },
             macros: {
-              type: Type.OBJECT,
+              type: SchemaType.OBJECT,
               properties: {
-                p: { type: Type.NUMBER },
-                c: { type: Type.NUMBER },
-                f: { type: Type.NUMBER },
-              }
+                p: { type: SchemaType.NUMBER },
+                c: { type: SchemaType.NUMBER },
+                f: { type: SchemaType.NUMBER },
+              },
+              required: ["p", "c", "f"]
             },
             items: {
-              type: Type.ARRAY,
+              type: SchemaType.ARRAY,
               items: {
-                type: Type.OBJECT,
+                type: SchemaType.OBJECT,
                 properties: {
-                  name: { type: Type.STRING },
-                  quantity: { type: Type.STRING },
-                  calories: { type: Type.NUMBER }
-                }
+                  name: { type: SchemaType.STRING },
+                  quantity: { type: SchemaType.STRING },
+                  calories: { type: SchemaType.NUMBER }
+                },
+                required: ["name", "quantity", "calories"]
               }
             },
-            message: { type: Type.STRING }
-          }
+            message: { type: SchemaType.STRING }
+          },
+          required: ["foodName", "calories", "macros", "items", "message"]
         }
       }
     });
 
-    const jsonStr = response.text;
+    const prompt = `You are NURA, a lifestyle nutrition coach focused on consistency and flow. Analyze this food log: "${text}". 
+    Return a JSON object with:
+    - foodName (string, overall summary name)
+    - calories (number, total)
+    - macros (object with p, c, f as numbers for protein, carbs, fats in grams)
+    - items (array of objects with: name (string), quantity (string, e.g. '1 large', '100g'), calories (number))
+    - message (string, a short motivational phrase in Portuguese about maintaining the flow, e.g. "Boa escolha para manter o flow!", "Nutrindo seu potencial.", "Energia limpa para o seu dia.")
+    Approximate values if needed. Keep the tone encouraging and scientific but accessible.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const jsonStr = response.text();
+
     if (!jsonStr) throw new Error("Empty response");
 
     return JSON.parse(cleanJsonString(jsonStr)) as AIResponse;
@@ -73,23 +82,32 @@ export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> 
     const mimeType = base64Image.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)?.[1] || 'image/png';
     const data = base64Image.split(',')[1]; // Remove header
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: {
-        parts: [
-          { inlineData: { mimeType, data } },
-          { text: "You are NURA, a lifestyle nutrition coach. Identify the food in this image. Return strict JSON: { \"foodName\": string, \"calories\": number, \"macros\": { \"p\": number, \"c\": number, \"f\": number }, \"items\": [{ \"name\": string, \"quantity\": string, \"calories\": number }], \"message\": string (short motivational phrase in Portuguese, e.g. 'Bela composição para o seu flow!') }." }
-        ]
-      }
-    });
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
-    let text = response.text || "{}";
+    const prompt = `You are NURA, a lifestyle nutrition coach. Identify the food in this image. 
+    Return a STRICT JSON string with this structure:
+    { 
+      "foodName": string, 
+      "calories": number, 
+      "macros": { "p": number, "c": number, "f": number }, 
+      "items": [{ "name": string, "quantity": string, "calories": number }], 
+      "message": string (short motivational phrase in Portuguese) 
+    }`;
+
+    const result = await model.generateContent([
+      prompt,
+      { inlineData: { mimeType, data } }
+    ]);
+
+    const response = await result.response;
+    let text = response.text() || "{}";
+
+    // Clean up if it enters markdown mode
+    text = cleanJsonString(text);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      text = jsonMatch[0];
-    }
+    if (jsonMatch) text = jsonMatch[0];
 
-    return JSON.parse(cleanJsonString(text)) as AIResponse;
+    return JSON.parse(text) as AIResponse;
   } catch (error) {
     console.error("Gemini Image Error:", error);
     throw error;
@@ -100,6 +118,11 @@ export const generatePlanContent = async (profile: any): Promise<any> => {
   if (!apiKey) throw new Error("API Key missing");
 
   try {
+    const model = genAI.getGenerativeModel({
+      model: MODEL_NAME,
+      generationConfig: { responseMimeType: "application/json" }
+    });
+
     const prompt = `
       You are NURA, an expert nutritionist and fitness coach. 
       Create a 3-Month Quarterly Plan for this user:
@@ -125,17 +148,14 @@ export const generatePlanContent = async (profile: any): Promise<any> => {
       Language: Portuguese (PT-BR).
     `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: prompt,
-      config: { responseMimeType: "application/json" }
-    });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const jsonStr = response.text() || "{}";
 
-    const jsonStr = response.text || "{}";
     return JSON.parse(cleanJsonString(jsonStr));
   } catch (error) {
     console.error("Gemini Plan Error:", error);
-    // Mock for demo if API fails
+    // Mock for fallback
     return {
       calories: 2200,
       macros: { protein: 160, carbs: 220, fats: 70 },
