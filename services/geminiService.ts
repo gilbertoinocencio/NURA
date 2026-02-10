@@ -95,3 +95,56 @@ export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> 
     throw error;
   }
 };
+
+export const generatePlanContent = async (profile: any): Promise<any> => {
+  if (!apiKey) throw new Error("API Key missing");
+
+  try {
+    const prompt = `
+      You are NURA, an expert nutritionist and fitness coach. 
+      Create a 3-Month Quarterly Plan for this user:
+      - Biotype: ${profile.biotype}
+      - Goal: ${profile.goal}
+      - Activity: ${profile.activity_level}
+      - Stats: ${profile.weight}kg, ${profile.height}cm, ${profile.age} years, ${profile.gender}
+      
+      Return a STRICT JSON object (no markdown) with:
+      {
+        "calories": number (daily target),
+        "macros": { "protein": number, "carbs": number, "fats": number },
+        "optimization_tag": string (e.g., "Otimizado: Ectomorfo"),
+        "phases": [
+          { "title": string, "tag": string, "description": string }, // Phase 1 (Month 1)
+          { "title": string, "tag": string, "description": string }, // Phase 2 (Month 2 - Flow Focus)
+          { "title": string, "tag": string, "description": string }  // Phase 3 (Month 3)
+        ]
+      }
+      
+      Ensure the plan is scientifically tailored to the biotype and goal.
+      Phase 2 should always be the "Flow" or "Construction" peak phase.
+      Language: Portuguese (PT-BR).
+    `;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: prompt,
+      config: { responseMimeType: "application/json" }
+    });
+
+    const jsonStr = response.text || "{}";
+    return JSON.parse(cleanJsonString(jsonStr));
+  } catch (error) {
+    console.error("Gemini Plan Error:", error);
+    // Mock for demo if API fails
+    return {
+      calories: 2200,
+      macros: { protein: 160, carbs: 220, fats: 70 },
+      optimization_tag: "Otimizado: IA Fallback",
+      phases: [
+        { title: "Adaptação", tag: "Fase 1", description: "Recalibrando metabolismo." },
+        { title: "Flow", tag: "Fase 2", description: "Foco total em performance." },
+        { title: "Consolidação", tag: "Fase 3", description: "Mantendo os ganhos." }
+      ]
+    };
+  }
+};
