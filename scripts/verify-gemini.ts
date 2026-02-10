@@ -2,8 +2,8 @@
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-// Load .env from project root
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Load .env.local from project root
+dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
 const testGemini = async () => {
     console.log('🧪 Testing Gemini 1.5 Flash Integration...');
