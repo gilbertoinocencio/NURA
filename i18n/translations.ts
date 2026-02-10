@@ -65,12 +65,17 @@ export interface Translations {
         fatsLabel: string;
         aiInsightLabel: string;
         aiInsightText: string;
+        insightEconomic: string;
+        insightBalanced: string;
         currentMeal: string;
         completed: string;
         complexCarbs: string;
         goodFats: string;
         proteinGoal: string;
         swap: string;
+        per100g: string;
+        noFoods: string;
+        logThis: string;
     };
 
     // MealLogger
@@ -195,12 +200,17 @@ export const translations: Record<Language, Translations> = {
             fatsLabel: 'Fats',
             aiInsightLabel: 'NURA AI Insight',
             aiInsightText: 'With the <b>Premium</b> profile active, we prioritize high bioavailability sources like wild salmon to optimize your cognition today.',
+            insightEconomic: 'With <b>Economic</b> focus, we prioritize cost-effective high-protein sources: eggs, sardines, and rice with beans.',
+            insightBalanced: 'With the <b>Balanced</b> profile, we combine cost-benefit with nutritional quality. Chicken, sweet potato, and avocado are your allies.',
             currentMeal: 'Current Meal',
             completed: 'Completed',
             complexCarbs: 'Complex',
             goodFats: 'Good',
             proteinGoal: 'Goal: 120g',
             swap: 'Swap',
+            per100g: 'Per 100g',
+            noFoods: 'No items found for this filter.',
+            logThis: 'Log this food',
         },
         mealLogger: {
             title: 'NURA Assistant',
@@ -302,7 +312,7 @@ export const translations: Record<Language, Translations> = {
         foodGuide: {
             title: 'Guia de Alimentos',
             subtitle: 'Sugestões personalizadas para sua energia.',
-            heroTitle: 'Nutrição para\no seu Flow',
+            heroTitle: 'Nutrição para\\no seu Flow',
             heroSubtitle: 'Sugestões personalizadas para sua energia.',
             economic: 'Econômico',
             balanced: 'Equilibrado',
@@ -314,12 +324,17 @@ export const translations: Record<Language, Translations> = {
             fatsLabel: 'Gorduras',
             aiInsightLabel: 'NURA AI Insight',
             aiInsightText: 'Com o perfil <b>Premium</b> ativo, priorizamos fontes de alta biodisponibilidade como salmão selvagem para otimizar sua cognição hoje.',
+            insightEconomic: 'Com foco <b>Econômico</b>, priorizamos fontes de alta densidade proteica que cabem no bolso: ovos, sardinha e arroz com feijão.',
+            insightBalanced: 'Com o perfil <b>Equilibrado</b>, combinamos custo-benefício com qualidade nutricional. Frango, batata doce e abacate são seus aliados.',
             currentMeal: 'Refeição Atual',
             completed: 'Concluído',
             complexCarbs: 'Complexos',
             goodFats: 'Boas',
             proteinGoal: 'Meta: 120g',
             swap: 'Trocar',
+            per100g: 'Por 100g',
+            noFoods: 'Nenhum item encontrado para este filtro.',
+            logThis: 'Registrar este alimento',
         },
         mealLogger: {
             title: 'Assistente NURA',
@@ -421,7 +436,7 @@ export const translations: Record<Language, Translations> = {
         foodGuide: {
             title: 'Guía de Alimentos',
             subtitle: 'Sugerencias personalizadas para tu energía.',
-            heroTitle: 'Nutrición para\ntu Flow',
+            heroTitle: 'Nutrición para\\ntu Flow',
             heroSubtitle: 'Sugerencias personalizadas para tu energía.',
             economic: 'Económico',
             balanced: 'Equilibrado',
@@ -433,12 +448,17 @@ export const translations: Record<Language, Translations> = {
             fatsLabel: 'Grasas',
             aiInsightLabel: 'NURA AI Insight',
             aiInsightText: 'Con el perfil <b>Premium</b> activo, priorizamos fuentes de alta biodisponibilidad como salmón salvaje para optimizar tu cognición hoy.',
+            insightEconomic: 'Con enfoque <b>Económico</b>, priorizamos fuentes de alta densidad proteica accesibles: huevos, sardinas y arroz con frijoles.',
+            insightBalanced: 'Con el perfil <b>Equilibrado</b>, combinamos costo-beneficio con calidad nutricional. Pollo, batata y aguacate son tus aliados.',
             currentMeal: 'Comida Actual',
             completed: 'Completado',
             complexCarbs: 'Complejos',
             goodFats: 'Buenas',
             proteinGoal: 'Meta: 120g',
             swap: 'Intercambiar',
+            per100g: 'Por 100g',
+            noFoods: 'No se encontraron items para este filtro.',
+            logThis: 'Registrar este alimento',
         },
         mealLogger: {
             title: 'Asistente NURA',
