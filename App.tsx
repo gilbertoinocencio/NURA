@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { FlowDashboard } from './components/FlowDashboard';
 import { SocialFeed } from './components/SocialFeed';
 import { MealLogger } from './components/MealLogger';
+import { FoodGuide } from './components/FoodGuide';
 import { SocialShare } from './components/SocialShare';
 import { QuarterlyPlan } from './components/QuarterlyPlan';
 import { PlanProgressShare } from './components/PlanProgressShare';
@@ -24,7 +25,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<AppView>(AppView.HOME);
   const [stats, setStats] = useState<DailyStats>(INITIAL_STATS);
   const [meals, setMeals] = useState<Meal[]>([]);
-  
+
   // Default to false for the Original Light Mode Theme
   const [darkMode, setDarkMode] = useState(false);
 
@@ -56,16 +57,16 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout 
-      activeView={view} 
+    <Layout
+      activeView={view}
       onChangeView={setView}
       onFabClick={() => setView(AppView.LOG)}
     >
-      
+
       {view === AppView.HOME && (
-        <FlowDashboard 
-          stats={stats} 
-          onFabClick={() => setView(AppView.DAILY_JOURNAL)} 
+        <FlowDashboard
+          stats={stats}
+          onFabClick={() => setView(AppView.DAILY_JOURNAL)}
           onShareClick={() => setView(AppView.SHARE)}
           onNavClick={setView}
           activeView={view}
@@ -75,24 +76,24 @@ const App: React.FC = () => {
       )}
 
       {view === AppView.FEED && (
-        <SocialFeed 
-           onNavigate={setView} 
-           onFabClick={() => setView(AppView.LOG)}
-           activeView={view}
+        <SocialFeed
+          onNavigate={setView}
+          onFabClick={() => setView(AppView.LOG)}
+          activeView={view}
         />
       )}
 
       {view === AppView.PLAN && (
-        <QuarterlyPlan 
-           onBack={() => setView(AppView.HOME)} 
-           onNavigate={setView}
+        <QuarterlyPlan
+          onBack={() => setView(AppView.HOME)}
+          onNavigate={setView}
         />
       )}
 
       {view === AppView.PLAN_SHARE && (
         <PlanProgressShare onBack={() => setView(AppView.PLAN)} />
       )}
-      
+
       {view === AppView.QUARTERLY_ANALYSIS && (
         <QuarterlyAnalysis
           onBack={() => setView(AppView.PROFILE)}
@@ -149,7 +150,7 @@ const App: React.FC = () => {
 
       {/* Main Profile View */}
       {view === AppView.PROFILE && (
-        <ProfileView 
+        <ProfileView
           onNavClick={setView}
           onSettingsClick={() => setView(AppView.SETTINGS)}
           isDarkMode={darkMode}
@@ -159,15 +160,23 @@ const App: React.FC = () => {
 
       {/* Legacy Config/Settings View */}
       {view === AppView.SETTINGS && (
-        <ProfileConfig 
-           onBack={() => setView(AppView.PROFILE)}
-           onFinish={() => setView(AppView.PROFILE)}
+        <ProfileConfig
+          onBack={() => setView(AppView.PROFILE)}
+          onFinish={() => setView(AppView.PROFILE)}
         />
       )}
 
       {/* Hydration Template View */}
       {view === AppView.HYDRATION && (
         <HydrationSocial onBack={() => setView(AppView.HOME)} />
+      )}
+
+      {/* Food Guide */}
+      {view === AppView.FOOD_GUIDE && (
+        <FoodGuide
+          onBack={() => setView(AppView.HOME)}
+          onNavigate={setView}
+        />
       )}
 
       {/* Overlays */}

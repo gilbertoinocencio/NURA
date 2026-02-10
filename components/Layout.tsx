@@ -9,19 +9,20 @@ interface LayoutProps {
   onFabClick?: () => void; // Optional, defaults to LOG view
 }
 
-export const Layout: React.FC<LayoutProps> = ({ 
-  children, 
-  activeView, 
+export const Layout: React.FC<LayoutProps> = ({
+  children,
+  activeView,
   onChangeView,
-  onFabClick 
+  onFabClick
 }) => {
   // Define which views should show the bottom navigation
   const showBottomNav = [
     AppView.HOME,
     AppView.FEED,
+    AppView.FOOD_GUIDE,
     AppView.PLAN,
     AppView.PROFILE,
-    AppView.QUARTERLY_ANALYSIS, // Optional: Keep nav on analysis for better flow
+    AppView.QUARTERLY_ANALYSIS,
     AppView.VISUAL_EVOLUTION
   ].includes(activeView);
 
@@ -38,11 +39,11 @@ export const Layout: React.FC<LayoutProps> = ({
       <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar relative">
         {children}
       </main>
-      
+
       {showBottomNav && (
-        <BottomNavigation 
-          activeView={activeView} 
-          onNavigate={onChangeView} 
+        <BottomNavigation
+          activeView={activeView}
+          onNavigate={onChangeView}
           onFabClick={handleFabClick}
         />
       )}

@@ -13,7 +13,7 @@ export interface Translations {
     // Navigation
     nav: {
         home: string;
-        feed: string;
+        nutri: string;
         log: string;
         data: string;
         profile: string;
@@ -30,6 +30,47 @@ export interface Translations {
         fats: string;
         logMeal: string;
         shareMyDay: string;
+    };
+
+    // Flow Score Dashboard
+    flowScore: {
+        flowScore: string;
+        optimized: string;
+        day: string;
+        week: string;
+        month: string;
+        insightText: string;
+        weeklyRhythm: string;
+        consistency: string;
+        steady: string;
+        metrics: string;
+        viewAll: string;
+        hydration: string;
+        energy: string;
+    };
+
+    // Food Guide
+    foodGuide: {
+        title: string;
+        subtitle: string;
+        heroTitle: string;
+        heroSubtitle: string;
+        economic: string;
+        balanced: string;
+        premium: string;
+        weeklyBudget: string;
+        filteredByAi: string;
+        proteins: string;
+        carbohydrates: string;
+        fatsLabel: string;
+        aiInsightLabel: string;
+        aiInsightText: string;
+        currentMeal: string;
+        completed: string;
+        complexCarbs: string;
+        goodFats: string;
+        proteinGoal: string;
+        swap: string;
     };
 
     // MealLogger
@@ -102,7 +143,7 @@ export const translations: Record<Language, Translations> = {
         },
         nav: {
             home: 'Home',
-            feed: 'Feed',
+            nutri: 'Nutri',
             log: 'Log',
             data: 'Data',
             profile: 'Profile',
@@ -117,6 +158,43 @@ export const translations: Record<Language, Translations> = {
             fats: 'Fats',
             logMeal: 'Log Meal',
             shareMyDay: 'Share My Day',
+        },
+        flowScore: {
+            flowScore: 'Flow Score',
+            optimized: 'Optimized',
+            day: 'Day',
+            week: 'Week',
+            month: 'Month',
+            insightText: 'Your consistency is up <b>+12%</b> this week. Peak flow achieved at 2 PM.',
+            weeklyRhythm: 'Weekly Rhythm',
+            consistency: 'Consistency',
+            steady: 'Steady',
+            metrics: 'Metrics',
+            viewAll: 'View all',
+            hydration: 'Hydration',
+            energy: 'Energy',
+        },
+        foodGuide: {
+            title: 'Food Guide',
+            subtitle: 'Personalized suggestions for your energy.',
+            heroTitle: 'Nutrition for\nyour Flow',
+            heroSubtitle: 'Personalized suggestions for your energy.',
+            economic: 'Economic',
+            balanced: 'Balanced',
+            premium: 'Premium',
+            weeklyBudget: 'Weekly Budget',
+            filteredByAi: 'Filtered by AI',
+            proteins: 'Proteins',
+            carbohydrates: 'Carbs',
+            fatsLabel: 'Fats',
+            aiInsightLabel: 'NURA AI Insight',
+            aiInsightText: 'With the <b>Premium</b> profile active, we prioritize high bioavailability sources like wild salmon to optimize your cognition today.',
+            currentMeal: 'Current Meal',
+            completed: 'Completed',
+            complexCarbs: 'Complex',
+            goodFats: 'Good',
+            proteinGoal: 'Goal: 120g',
+            swap: 'Swap',
         },
         mealLogger: {
             title: 'NURA Assistant',
@@ -178,7 +256,7 @@ export const translations: Record<Language, Translations> = {
         },
         nav: {
             home: 'Início',
-            feed: 'Feed',
+            nutri: 'Nutri',
             log: 'Registrar',
             data: 'Dados',
             profile: 'Perfil',
@@ -193,6 +271,43 @@ export const translations: Record<Language, Translations> = {
             fats: 'Gorduras',
             logMeal: 'Registrar Refeição',
             shareMyDay: 'Compartilhar Meu Dia',
+        },
+        flowScore: {
+            flowScore: 'Flow Score',
+            optimized: 'Otimizado',
+            day: 'Dia',
+            week: 'Semana',
+            month: 'Mês',
+            insightText: 'Sua consistência aumentou <b>+12%</b> esta semana. Pico de flow às 14h.',
+            weeklyRhythm: 'Ritmo Semanal',
+            consistency: 'Consistência',
+            steady: 'Estável',
+            metrics: 'Métricas',
+            viewAll: 'Ver tudo',
+            hydration: 'Hidratação',
+            energy: 'Energia',
+        },
+        foodGuide: {
+            title: 'Guia de Alimentos',
+            subtitle: 'Sugestões personalizadas para sua energia.',
+            heroTitle: 'Nutrição para\no seu Flow',
+            heroSubtitle: 'Sugestões personalizadas para sua energia.',
+            economic: 'Econômico',
+            balanced: 'Equilibrado',
+            premium: 'Premium',
+            weeklyBudget: 'Budget Semanal',
+            filteredByAi: 'Filtrado por IA',
+            proteins: 'Proteínas',
+            carbohydrates: 'Carboidratos',
+            fatsLabel: 'Gorduras',
+            aiInsightLabel: 'NURA AI Insight',
+            aiInsightText: 'Com o perfil <b>Premium</b> ativo, priorizamos fontes de alta biodisponibilidade como salmão selvagem para otimizar sua cognição hoje.',
+            currentMeal: 'Refeição Atual',
+            completed: 'Concluído',
+            complexCarbs: 'Complexos',
+            goodFats: 'Boas',
+            proteinGoal: 'Meta: 120g',
+            swap: 'Trocar',
         },
         mealLogger: {
             title: 'Assistente NURA',
@@ -254,7 +369,7 @@ export const translations: Record<Language, Translations> = {
         },
         nav: {
             home: 'Inicio',
-            feed: 'Feed',
+            nutri: 'Nutri',
             log: 'Registrar',
             data: 'Datos',
             profile: 'Perfil',
@@ -269,6 +384,43 @@ export const translations: Record<Language, Translations> = {
             fats: 'Grasas',
             logMeal: 'Registrar Comida',
             shareMyDay: 'Compartir Mi Día',
+        },
+        flowScore: {
+            flowScore: 'Flow Score',
+            optimized: 'Optimizado',
+            day: 'Día',
+            week: 'Semana',
+            month: 'Mes',
+            insightText: 'Tu consistencia subió <b>+12%</b> esta semana. Pico de flow a las 2 PM.',
+            weeklyRhythm: 'Ritmo Semanal',
+            consistency: 'Consistencia',
+            steady: 'Estable',
+            metrics: 'Métricas',
+            viewAll: 'Ver todo',
+            hydration: 'Hidratación',
+            energy: 'Energía',
+        },
+        foodGuide: {
+            title: 'Guía de Alimentos',
+            subtitle: 'Sugerencias personalizadas para tu energía.',
+            heroTitle: 'Nutrición para\ntu Flow',
+            heroSubtitle: 'Sugerencias personalizadas para tu energía.',
+            economic: 'Económico',
+            balanced: 'Equilibrado',
+            premium: 'Premium',
+            weeklyBudget: 'Budget Semanal',
+            filteredByAi: 'Filtrado por IA',
+            proteins: 'Proteínas',
+            carbohydrates: 'Carbohidratos',
+            fatsLabel: 'Grasas',
+            aiInsightLabel: 'NURA AI Insight',
+            aiInsightText: 'Con el perfil <b>Premium</b> activo, priorizamos fuentes de alta biodisponibilidad como salmón salvaje para optimizar tu cognición hoy.',
+            currentMeal: 'Comida Actual',
+            completed: 'Completado',
+            complexCarbs: 'Complejos',
+            goodFats: 'Buenas',
+            proteinGoal: 'Meta: 120g',
+            swap: 'Intercambiar',
         },
         mealLogger: {
             title: 'Asistente NURA',

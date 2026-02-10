@@ -17,8 +17,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
   const navItems = [
     { view: AppView.HOME, icon: 'home', label: t.nav.home, filled: true },
-    { view: AppView.FEED, icon: 'grid_view', label: t.nav.feed, filled: true },
-    { view: 'FAB', icon: 'add', label: '' }, // Placeholder for FAB
+    { view: AppView.FOOD_GUIDE, icon: 'restaurant', label: t.nav.nutri, filled: true },
+    { view: 'FAB', icon: 'add', label: '' },
     { view: AppView.PLAN, icon: 'bar_chart', label: t.nav.data, filled: false },
     { view: AppView.PROFILE, icon: 'person', label: t.nav.profile, filled: true },
   ];

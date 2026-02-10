@@ -1,41 +1,176 @@
 ---
-description: Fazer deploy das alterações no Vercel
+description: Deployment command for production releases. Pre-flight checks and deployment execution.
 ---
 
-# Deploy - Atualizar Vercel
+# /deploy - Production Deployment
 
-Workflow para enviar suas alterações para o GitHub e atualizar o site no Vercel automaticamente.
+$ARGUMENTS
 
-## Pré-requisitos
-- O projeto deve estar conectado ao GitHub (já está).
-- O Vercel deve estar conectado ao repositório (você já fez isso).
+---
 
-## Passos
+## Purpose
 
-// turbo
-1. Verificar status dos arquivos:
-```bash
-git status
+This command handles production deployment with pre-flight checks, deployment execution, and verification.
+
+---
+
+## Sub-commands
+
+```
+/deploy            - Interactive deployment wizard
+/deploy check      - Run pre-deployment checks only
+/deploy preview    - Deploy to preview/staging
+/deploy production - Deploy to production
+/deploy rollback   - Rollback to previous version
 ```
 
-// turbo
-2. Adicionar todas as mudanças:
-```bash
-git add .
+---
+
+## Pre-Deployment Checklist
+
+Before any deployment:
+
+```markdown
+## 🚀 Pre-Deploy Checklist
+
+### Code Quality
+- [ ] No TypeScript errors (`npx tsc --noEmit`)
+- [ ] ESLint passing (`npx eslint .`)
+- [ ] All tests passing (`npm test`)
+
+### Security
+- [ ] No hardcoded secrets
+- [ ] Environment variables documented
+- [ ] Dependencies audited (`npm audit`)
+
+### Performance
+- [ ] Bundle size acceptable
+- [ ] No console.log statements
+- [ ] Images optimized
+
+### Documentation
+- [ ] README updated
+- [ ] CHANGELOG updated
+- [ ] API docs current
+
+### Ready to deploy? (y/n)
 ```
 
-3. Confirmar as mudanças (Commit):
-   - Digite uma mensagem simples quando solicitado (ou use o padrão "Update")
-```bash
-git commit -m "Update via workflow /deploy"
+---
+
+## Deployment Flow
+
+```
+┌─────────────────┐
+│  /deploy        │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Pre-flight     │
+│  checks         │
+└────────┬────────┘
+         │
+    Pass? ──No──► Fix issues
+         │
+        Yes
+         │
+         ▼
+┌─────────────────┐
+│  Build          │
+│  application    │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Deploy to      │
+│  platform       │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Health check   │
+│  & verify       │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  ✅ Complete    │
+└─────────────────┘
 ```
 
-// turbo
-4. Enviar para o GitHub (Push):
-```bash
-git push origin master
+---
+
+## Output Format
+
+### Successful Deploy
+
+```markdown
+## 🚀 Deployment Complete
+
+### Summary
+- **Version:** v1.2.3
+- **Environment:** production
+- **Duration:** 47 seconds
+- **Platform:** Vercel
+
+### URLs
+- 🌐 Production: https://app.example.com
+- 📊 Dashboard: https://vercel.com/project
+
+### What Changed
+- Added user profile feature
+- Fixed login bug
+- Updated dependencies
+
+### Health Check
+✅ API responding (200 OK)
+✅ Database connected
+✅ All services healthy
 ```
 
-## O que acontece agora?
-- O Vercel detecta o novo commit automaticamente.
-- Em 1-2 minutos, o site `https://nura-seven.vercel.app` será atualizado.
+### Failed Deploy
+
+```markdown
+## ❌ Deployment Failed
+
+### Error
+Build failed at step: TypeScript compilation
+
+### Details
+```
+error TS2345: Argument of type 'string' is not assignable...
+```
+
+### Resolution
+1. Fix TypeScript error in `src/services/user.ts:45`
+2. Run `npm run build` locally to verify
+3. Try `/deploy` again
+
+### Rollback Available
+Previous version (v1.2.2) is still active.
+Run `/deploy rollback` if needed.
+```
+
+---
+
+## Platform Support
+
+| Platform | Command | Notes |
+|----------|---------|-------|
+| Vercel | `vercel --prod` | Auto-detected for Next.js |
+| Railway | `railway up` | Needs Railway CLI |
+| Fly.io | `fly deploy` | Needs flyctl |
+| Docker | `docker compose up -d` | For self-hosted |
+
+---
+
+## Examples
+
+```
+/deploy
+/deploy check
+/deploy preview
+/deploy production --skip-tests
+/deploy rollback
+```
