@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
 import { useLanguage } from '../i18n';
+import { FoodService, FoodItem as ServiceFoodItem } from '../services/foodService';
 
 interface FoodGuideProps {
     onBack: () => void;
@@ -10,74 +11,53 @@ interface FoodGuideProps {
 type BudgetTier = 'economic' | 'balanced' | 'premium';
 type MacroCategory = 'proteins' | 'carbs' | 'fats';
 
-interface FoodItem {
+// Adaptation of Service Schema to UI Schema
+interface UiFoodItem {
     name: string;
     description: string;
-    priceTier: number; // 1=$ 2=$$ 3=$$$
-    quality: number; // 1-4 dots filled
+    priceTier: number; // 1-3
+    quality: number; // 1-4
     image: string;
+    category: string;
+    tier: string;
 }
-
-const FOOD_DATA: Record<MacroCategory, { label: string; badge: string; items: FoodItem[] }> = {
-    proteins: {
-        label: 'proteins',
-        badge: 'proteinGoal',
-        items: [
-            {
-                name: 'Filé de Salmão',
-                description: 'Rico em Ômega 3 • 22g Prot',
-                priceTier: 3,
-                quality: 3,
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2X539si6qaRuTbwGWrxCtgj1YOuqWTsBrLhSA4ldVLXEL8EDCglfGzaJnob7gBvWMUPVL8_1W_AgJ01pnf7qTmP0j--DClYm1zTZIRRHkVJdYpiSxhqJA_gGI-PDkfzoFR27Bmxs85j6XZuXci-4XpZj5BuWPW_GN1CPQjbD5-Z11xC4ywec3Uiaxz5Ov3gde2KcxQbh1RkObSF-NV7deebxJ1jd1qd-nj_RjsPFMjPAN8LfWG8xMGOkDZtKVE8QJ1vYoxB25A-s',
-            },
-            {
-                name: 'Tofu Orgânico',
-                description: 'Leve • 10g Prot',
-                priceTier: 2,
-                quality: 2,
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDngn1ibGmCJzDicWe4XHeti_reR1moRro_8duoxw_EwEoRvk5R1vwCWkDlz8M8JhX41_qt5VqSsrUeXT0DXX4emM5ZOK8CdWaKS1LFlelRTvEdpxRHv8px6-lgydkOIuCTc1EtJOAmDD4N2_SH7s2QApLlIyb3SYA12-gTnrRUO498T31FnQPRH58AShH32n72wtYtARFmrvDWyZVp9uwiBgYqKa60KixY2QXARGdF5fKOYizFRLHLluZx64gQevuTWtr_G1OV6Ws',
-            },
-        ],
-    },
-    carbs: {
-        label: 'carbohydrates',
-        badge: 'complexCarbs',
-        items: [
-            {
-                name: 'Quinoa Real',
-                description: 'Baixo IG • Rica em Fibras',
-                priceTier: 2,
-                quality: 4,
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-mAkx-lKAahq7LXLXl6tgpTmadve1UgPQxsXAGhczVevGX-AOf1ljc6hgiSfqjmw2e7HRQeOvLoPTPFknDC3IakWilDK-vSKB2u6Pp3dji86JHTLB2X0FEif4srpMbDAzyo3kdvFsZwVP8ONIioJNXMDpK-jyH8LK3HEW_0LmqJMnrDH8sJs6jA4JOCiDCjOrm-QjdaoxU-_kRWV3z8qcCpTl9YVKD1E44a0lQbTF1-w-dMU7gkGMtTqqoC2TNghmhel0uY7JpXo',
-            },
-            {
-                name: 'Batata Doce',
-                description: 'Energia sustentada',
-                priceTier: 1,
-                quality: 2,
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8Ck-IW6emU3_-X9yfQGJeNroPIxcrQzZziXP8Si0N3uHOyrNWq6gZCi8d-EG18qjXWy7TH1faW7Y65xuCgr-VklgVofl2nsnq1KRBbHRhlO3FuaFhMQVshjulOFf1UOunbQoY8Mk3cbU688JIFPyH2-YbJZToPO3ZVnimZ3e0XLLIbDExNSdzaFol_QdkkQQOJLh8tQD-ZHE1I1M4mvcx0sZqkPRyI-rBnHt-4bi5zSzwTwbUFkD2J0o1Nb1cgZsnO_3Q13D-QpY',
-            },
-        ],
-    },
-    fats: {
-        label: 'fatsLabel',
-        badge: 'goodFats',
-        items: [
-            {
-                name: 'Abacate Hass',
-                description: 'Anti-inflamatório',
-                priceTier: 2,
-                quality: 3,
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDudZb3wBbHrLwuw0Q4ZdSDV1f8bnkFxeXmbJ0evOt6rXAcrQi0ry7RnsMrB-4a0veOqxDA9DckYiN-MTCvDLs6uMTHF3_mOE-bRQV4Ynb_vTo13w2f1AGZ6ILUFceld40xJsmDmsBMNCWBPtxtgRyOGbfOeoqfjEg76yzB4LtoANw6D5i8K3y906wVL0pZ_IWVqRfTZPnIKDKeco5Cof8KP29E3eukBUllGevkiFh2gEw-l0kneawKcYg7p_YnL75O--3tQjuZfzk',
-            },
-        ],
-    },
-};
 
 export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
     const { t } = useLanguage();
     const [budgetTier, setBudgetTier] = useState<BudgetTier>('premium');
     const [activeCategory, setActiveCategory] = useState<MacroCategory>('proteins');
+    const [foods, setFoods] = useState<UiFoodItem[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadFoods();
+    }, []);
+
+    const loadFoods = async () => {
+        setLoading(true);
+        try {
+            // Seed if empty (auto-fix)
+            await FoodService.seedInitialFoods();
+
+            const data = await FoodService.getFoods();
+
+            // Map DB items to UI items
+            const mapped: UiFoodItem[] = data.map(f => ({
+                name: f.name,
+                description: `${f.category.toUpperCase()} • ${f.tier}`, // Simple description for now
+                priceTier: f.tier === 'budget' ? 1 : f.tier === 'balanced' ? 2 : 3,
+                quality: f.quality_score || 3,
+                image: f.image_url || 'https://via.placeholder.com/150',
+                category: f.category,   // 'protein', 'carbs', 'fats' (singular in DB?)
+                tier: f.tier
+            }));
+            setFoods(mapped);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const priceTierDisplay = (tier: number) => '$'.repeat(tier);
 
@@ -86,6 +66,23 @@ export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
         carbs: 'grain',
         fats: 'opacity',
     };
+
+    // Filter Logic
+    const filteredFoods = foods.filter(f => {
+        // Map DB category (singular) to UI category (plural keys)
+        // DB: 'protein', 'carbs', 'fats'
+        // UI Keys: 'proteins', 'carbs', 'fats'
+        const catMatch =
+            (activeCategory === 'proteins' && f.category === 'protein') ||
+            (activeCategory === 'carbs' && f.category === 'carbs') || // DB usually singular 'carb'? Check seed. Seed says 'carbs'
+            (activeCategory === 'fats' && f.category === 'fats');
+
+        const tierMatch = f.tier === budgetTier;
+
+        // Show all tiers if no strict filtering, or filter strict? UI has tier selector.
+        // Let's filter strict for the tier selector.
+        return catMatch && tierMatch;
+    });
 
     return (
         <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-nura-bg dark:bg-background-dark font-display text-nura-main dark:text-white animate-fade-in transition-colors duration-300">
@@ -137,8 +134,8 @@ export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
                                 key={tier}
                                 onClick={() => setBudgetTier(tier)}
                                 className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${budgetTier === tier
-                                        ? 'text-nura-petrol dark:text-white bg-white dark:bg-gray-700 shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
-                                        : 'text-nura-muted dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700'
+                                    ? 'text-nura-petrol dark:text-white bg-white dark:bg-gray-700 shadow-sm font-bold ring-1 ring-black/5 dark:ring-white/10'
+                                    : 'text-nura-muted dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700'
                                     }`}
                             >
                                 {t.foodGuide[tier]}
@@ -154,8 +151,8 @@ export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
                             className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap transition-transform hover:scale-105 active:scale-95 ${activeCategory === cat
-                                    ? 'bg-nura-petrol dark:bg-primary text-white shadow-lg shadow-nura-petrol/20 dark:shadow-primary/20'
-                                    : 'bg-nura-pastel-orange dark:bg-gray-800 text-nura-petrol dark:text-gray-200 border border-transparent dark:border-gray-700'
+                                ? 'bg-nura-petrol dark:bg-primary text-white shadow-lg shadow-nura-petrol/20 dark:shadow-primary/20'
+                                : 'bg-nura-pastel-orange dark:bg-gray-800 text-nura-petrol dark:text-gray-200 border border-transparent dark:border-gray-700'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-[18px]">{macroIcons[cat]}</span>
@@ -182,19 +179,21 @@ export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
                     </div>
                 </div>
 
-                {/* Food Sections */}
-                {Object.entries(FOOD_DATA).map(([key, section]) => (
-                    <div key={key} className="mb-8">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-nura-petrol dark:text-white text-xl font-bold tracking-tight">
-                                {key === 'proteins' ? t.foodGuide.proteins : key === 'carbs' ? t.foodGuide.carbohydrates : t.foodGuide.fatsLabel}
-                            </h3>
-                            <span className="text-xs font-medium text-nura-muted dark:text-gray-400 bg-nura-pastel-orange dark:bg-gray-800 px-2 py-1 rounded-md">
-                                {(t.foodGuide as any)[section.badge]}
-                            </span>
-                        </div>
+                {/* Food List - Flat List now since we filter */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-nura-petrol dark:text-white text-xl font-bold tracking-tight capitalize">
+                            {activeCategory}
+                        </h3>
+                    </div>
+
+                    {loading ? (
+                        <div className="flex justify-center py-10"><div className="animate-spin h-6 w-6 border-2 border-primary rounded-full border-t-transparent"></div></div>
+                    ) : filteredFoods.length === 0 ? (
+                        <div className="text-center py-10 text-gray-400">Nenhum item encontrado para este filtro.</div>
+                    ) : (
                         <div className="flex flex-col gap-4">
-                            {section.items.map((item, idx) => (
+                            {filteredFoods.map((item, idx) => (
                                 <div key={idx} className="group flex items-center p-2 pr-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-nura-border dark:border-gray-800 hover:shadow-md transition-all duration-300">
                                     {/* Food Image */}
                                     <div className="size-16 rounded-xl bg-gray-100 dark:bg-gray-800 shrink-0 overflow-hidden relative mr-4">
@@ -219,8 +218,8 @@ export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
                                                 <div
                                                     key={dot}
                                                     className={`h-1.5 w-1.5 rounded-full ${dot <= item.quality
-                                                            ? 'bg-nura-petrol dark:bg-white'
-                                                            : 'bg-nura-pastel-orange dark:bg-gray-700'
+                                                        ? 'bg-nura-petrol dark:bg-white'
+                                                        : 'bg-nura-pastel-orange dark:bg-gray-700'
                                                         }`}
                                                 />
                                             ))}
@@ -234,8 +233,9 @@ export const FoodGuide: React.FC<FoodGuideProps> = ({ onBack, onNavigate }) => {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                ))}
+                    )}
+                </div>
+
             </main>
 
             {/* Bottom CTA */}

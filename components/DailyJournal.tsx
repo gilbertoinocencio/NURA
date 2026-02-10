@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
+import { DailyLogService } from '../services/dailyLogService';
+import { useAuth } from '../contexts/AuthContext';
 
 interface DailyJournalProps {
   onBack: () => void;
@@ -9,19 +11,68 @@ interface DailyJournalProps {
 type EnergyLevel = 'Baixa' | 'Média' | 'Boa' | 'Flow';
 
 export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }) => {
+  const { user } = useAuth();
   const [energy, setEnergy] = useState<EnergyLevel | null>(null);
+  const [notes, setNotes] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (user) loadLog();
+  }, [user]);
+
+  const loadLog = async () => {
+    if (!user) return;
+    const log = await DailyLogService.getDailyLog(user.id);
+    if (log) {
+      setEnergy(log.energy_level as EnergyLevel || null);
+      setNotes(log.notes || '');
+      setImagePreview(log.photo_url || null);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    setSaving(true);
+    try {
+      await DailyLogService.saveDailyLog({
+        user_id: user.id,
+        date: new Date().toISOString().split('T')[0],
+        energy_level: energy || undefined,
+        notes,
+        photo_url: imagePreview || undefined // If handleImageUpload uploaded to storage and set URL here
+      });
+      // Feedback?
+      onNavigate(AppView.SHARE); // Go to share flow as intended
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao salvar diário');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && user) {
+      // Local preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+
+      // Upload in background (simple version)
+      try {
+        const publicUrl = await DailyLogService.uploadJournalPhoto(user.id, file);
+        setImagePreview(publicUrl); // Update with real URL
+      } catch (e) {
+        console.error("Upload failed", e);
+      }
     }
   };
+
+  const todayDate = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' });
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl bg-journal-bg dark:bg-journal-bg-dark font-display text-journal-text dark:text-white animate-fade-in transition-colors duration-500">
@@ -35,8 +86,11 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <h1 className="text-sm font-semibold tracking-widest uppercase text-center flex-1 text-journal-text dark:text-white opacity-90">Diário NURA</h1>
-        <button className="flex items-center justify-end text-sm font-medium text-journal-accent hover:text-journal-accent/80 transition-colors">
-          Ajuda
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center justify-end text-sm font-medium text-journal-accent hover:text-journal-accent/80 transition-colors">
+          {saving ? 'Salvando...' : 'Salvar'}
         </button>
       </header>
 
@@ -44,25 +98,21 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
 
         {/* Date & Title */}
         <div className="flex flex-col items-center mb-10 animate-fade-in-up">
-          <p className="text-journal-sub dark:text-gray-400 text-xs font-semibold tracking-widest uppercase mb-2">Quinta-feira, 24 Out</p>
+          <p className="text-journal-sub dark:text-gray-400 text-xs font-semibold tracking-widest uppercase mb-2 capitalize">{todayDate}</p>
           <h2 className="text-4xl font-light text-journal-text dark:text-white tracking-tight text-center leading-tight">
-            Dia 12 <span className="font-normal text-journal-accent italic font-serif">do Plano</span>
+            <span className="font-normal text-journal-accent italic font-serif">Meu Flow</span>
           </h2>
         </div>
 
-        {/* Flow Status Card */}
+        {/* Flow Status Card (Visual Mock for now, could be real stats) */}
         <div className="bg-journal-surface dark:bg-journal-surface-dark rounded-2xl p-6 mb-10 shadow-soft border border-black/5 dark:border-white/5 transition-colors animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="flex justify-between items-end mb-4">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-bold text-journal-sub dark:text-gray-500 uppercase tracking-widest">Flow Status</span>
-              <span className="text-xl font-medium text-journal-primary dark:text-white">Excelente</span>
+              <span className="text-xl font-medium text-journal-primary dark:text-white">Em Progresso</span>
             </div>
-            <span className="text-3xl font-light text-journal-primary dark:text-white tracking-tighter">85%</span>
           </div>
-          <div className="relative h-2 w-full rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-            <div className="absolute top-0 left-0 h-full bg-journal-primary dark:bg-primary rounded-full transition-all duration-1000 ease-out" style={{ width: '85%' }}></div>
-          </div>
-          <p className="mt-3 text-xs text-journal-sub dark:text-gray-400 text-right font-medium">Metas batidas. Continue fluindo.</p>
+          <p className="mt-3 text-xs text-journal-sub dark:text-gray-400 text-right font-medium">Continue registrando para calcular.</p>
         </div>
 
         {/* Energy Selector */}
@@ -144,6 +194,8 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
           <h3 className="text-journal-text dark:text-white text-lg font-medium mb-3 px-1">Notas do Dia</h3>
           <div className="relative group">
             <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               className="w-full bg-transparent text-journal-text dark:text-white placeholder-gray-400 dark:placeholder-gray-600 text-base leading-relaxed border-0 border-b border-gray-200 dark:border-gray-700 focus:ring-0 focus:border-journal-accent px-1 py-3 resize-none transition-colors"
               placeholder="Como você alimentou seu flow hoje? Escreva brevemente..."
               rows={3}
@@ -158,11 +210,16 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
       <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-journal-bg via-journal-bg/95 to-transparent dark:from-journal-bg-dark dark:via-journal-bg-dark/95 pt-16 pb-8 px-6 pointer-events-none flex justify-center z-40">
         <div className="w-full max-w-md pointer-events-auto animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           <button
-            onClick={() => onNavigate(AppView.SHARE)}
+            onClick={handleSave}
+            disabled={saving}
             className="w-full bg-journal-primary hover:bg-[#16454D] dark:bg-primary dark:hover:bg-primary-old active:scale-[0.98] text-white font-medium text-lg py-4 rounded-xl shadow-journal-glow flex items-center justify-center gap-3 transition-all duration-300"
           >
-            <span>Preparar para Compartilhar</span>
-            <span className="material-symbols-outlined text-xl">ios_share</span>
+            {saving ? (
+              <span className="animate-spin material-symbols-outlined">sync</span>
+            ) : (
+              <span className="material-symbols-outlined text-xl">ios_share</span>
+            )}
+            <span>{saving ? 'Registrando...' : 'Preparar para Compartilhar'}</span>
           </button>
         </div>
       </div>
