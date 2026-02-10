@@ -15,6 +15,7 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
   const [energy, setEnergy] = useState<EnergyLevel | null>(null);
   const [notes, setNotes] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [shareToFeed, setShareToFeed] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -40,10 +41,10 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
         date: new Date().toISOString().split('T')[0],
         energy_level: energy || undefined,
         notes,
-        photo_url: imagePreview || undefined // If handleImageUpload uploaded to storage and set URL here
-      });
-      // Feedback?
-      onNavigate(AppView.SHARE); // Go to share flow as intended
+        photo_url: imagePreview || undefined
+      }, shareToFeed); // Pass share checkbox state
+
+      onNavigate(AppView.SHARE);
     } catch (e) {
       console.error(e);
       alert('Erro ao salvar diário');
@@ -204,6 +205,19 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
           </div>
         </div>
 
+        {/* Share Checkbox */}
+        <div className="mb-6 animate-fade-in-up flex items-center gap-3 px-1" style={{ animationDelay: '0.45s' }}>
+          <div
+            onClick={() => setShareToFeed(!shareToFeed)}
+            className={`size-6 rounded-md border flex items-center justify-center cursor-pointer transition-colors ${shareToFeed ? 'bg-journal-primary border-journal-primary' : 'border-gray-300 dark:border-gray-600'}`}
+          >
+            {shareToFeed && <span className="material-symbols-outlined text-white text-sm">check</span>}
+          </div>
+          <label onClick={() => setShareToFeed(!shareToFeed)} className="text-journal-text dark:text-white text-sm cursor-pointer select-none">
+            Compartilhar no Feed da Comunidade
+          </label>
+        </div>
+
       </main>
 
       {/* Footer Action */}
@@ -219,7 +233,7 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
             ) : (
               <span className="material-symbols-outlined text-xl">ios_share</span>
             )}
-            <span>{saving ? 'Registrando...' : 'Preparar para Compartilhar'}</span>
+            <span>{saving ? 'Registrando...' : 'Salvar Diário'}</span>
           </button>
         </div>
       </div>

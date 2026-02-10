@@ -191,12 +191,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
     reader.readAsDataURL(file);
   };
 
-  // Import useAuth
-  import { useAuth } from '../contexts/AuthContext';
-  import { MealService } from '../services/mealService';
 
-  // ... inside component
-  const { user } = useAuth();
 
   const handleConfirmLog = async (data: AIResponse, type: 'ai-chat' | 'ai-photo' | 'ai-voice') => {
     if (!user) return;

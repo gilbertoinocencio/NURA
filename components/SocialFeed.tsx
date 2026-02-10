@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppView } from '../types';
 import { USER_AVATAR } from '../constants';
-import { supabase } from '../supabase';
+import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
 interface SocialFeedProps {

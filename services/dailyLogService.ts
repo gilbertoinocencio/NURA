@@ -8,7 +8,7 @@ export interface DailyLogData {
     mood?: string;
     notes?: string;
     photo_url?: string;
-    water_intake?: number;
+    flow_score?: number;
 }
 
 export const DailyLogService = {
@@ -33,9 +33,11 @@ export const DailyLogService = {
     },
 
     // Upsert log (Create or Update)
-    async saveDailyLog(logData: Partial<DailyLogData> & { user_id: string; date: string }) {
+    async saveDailyLog(logData: Partial<DailyLogData> & { user_id: string; date: string }, shareToFeed: boolean = false) {
         // Check if exists
-        const existing = await this.getDailyLog(logData.user_id, new Date(logData.date));
+        const dateObj = new Date(logData.date);
+        const existing = await this.getDailyLog(logData.user_id, dateObj);
+        let savedLog: DailyLogData | null = null;
 
         if (existing) {
             // Update
@@ -47,7 +49,7 @@ export const DailyLogService = {
                 .single();
 
             if (error) throw error;
-            return data;
+            savedLog = data;
         } else {
             // Insert
             const { data, error } = await supabase
@@ -57,8 +59,25 @@ export const DailyLogService = {
                 .single();
 
             if (error) throw error;
-            return data;
+            savedLog = data;
         }
+
+        // Handle Share to Feed
+        if (shareToFeed && savedLog && (savedLog.photo_url || savedLog.notes)) {
+            try {
+                await supabase.from('posts').insert({
+                    user_id: savedLog.user_id,
+                    image_url: savedLog.photo_url,
+                    caption: savedLog.notes || 'Meu Flow do dia',
+                    flow_score: savedLog.flow_score || 0
+                });
+            } catch (postError) {
+                console.error("Error sharing to feed:", postError);
+                // Don't fail the whole save if posting fails, just log it
+            }
+        }
+
+        return savedLog;
     },
 
     async uploadJournalPhoto(userId: string, file: File): Promise<string> {

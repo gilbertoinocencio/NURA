@@ -1,4 +1,4 @@
-import { supabase } from '../supabase';
+import { supabase } from './supabase';
 
 export type UserLevel = 'seed' | 'root' | 'stem' | 'flower' | 'fruit';
 

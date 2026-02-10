@@ -92,6 +92,7 @@ export interface Translations {
         connectionError: string;
         voiceNotSupported: string;
         analysisIntro: string;
+        errorLogging: string;
     };
 
     // Profile
@@ -219,6 +220,7 @@ export const translations: Record<Language, Translations> = {
             connectionError: "Having trouble connecting to the flow. Try again.",
             voiceNotSupported: 'Your browser does not support voice recognition. Use Chrome for better experience.',
             analysisIntro: 'Got it. Here is the nutritional analysis of your flow:',
+            errorLogging: 'Error logging meal. Please try again.',
         },
         profile: {
             title: 'Profile',
@@ -337,6 +339,7 @@ export const translations: Record<Language, Translations> = {
             connectionError: 'Estou com dificuldade para conectar ao flow. Tente novamente.',
             voiceNotSupported: 'Seu navegador não suporta reconhecimento de voz. Use Chrome para melhor experiência.',
             analysisIntro: 'Entendido. Aqui está a análise nutricional do seu flow:',
+            errorLogging: 'Erro ao registrar refeição. Tente novamente.',
         },
         profile: {
             title: 'Perfil',
@@ -455,6 +458,7 @@ export const translations: Record<Language, Translations> = {
             connectionError: 'Tengo dificultades para conectar al flow. Intenta de nuevo.',
             voiceNotSupported: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome para mejor experiencia.',
             analysisIntro: 'Entendido. Aquí está el análisis nutricional de tu flow:',
+            errorLogging: 'Error al registrar comida. Intenta de nuevo.',
         },
         profile: {
             title: 'Perfil',
