@@ -37,7 +37,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
         .from('posts')
         .select(`
                 *,
-                profiles:user_id (display_name, avatar_url, level)
+                profiles (display_name, avatar_url, level)
             `)
         .order('created_at', { ascending: false });
 
@@ -63,9 +63,12 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
     if (!user) return;
 
     // Save to DB
-    await supabase.from('likes').insert({ post_id: postId, user_id: user.id });
-    // Trigger update on post counter? Database trigger usually handles this.
-    // For now, let's just insert.
+    try {
+      const { error } = await supabase.from('likes').insert({ post_id: postId, user_id: user.id });
+      if (error && error.code !== '23505') throw error; // Ignore duplicate likes
+    } catch (e) {
+      console.error("Error liking post:", e);
+    }
   };
 
   return (

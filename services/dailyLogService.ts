@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { GamificationService } from './gamificationService';
 
 export interface DailyLogData {
     id?: string;
@@ -76,6 +77,9 @@ export const DailyLogService = {
                 // Don't fail the whole save if posting fails, just log it
             }
         }
+
+        // Trigger Gamification Sync
+        await GamificationService.updateStats(logData.user_id);
 
         return savedLog;
     },

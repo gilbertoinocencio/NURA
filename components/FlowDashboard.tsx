@@ -4,6 +4,8 @@ import { USER_AVATAR } from '../constants';
 import { useLanguage } from '../i18n';
 import { GamificationService, GamificationStats } from '../services/gamificationService';
 import { useAuth } from '../contexts/AuthContext';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import { Confetti } from './Confetti';
 
 interface FlowDashboardProps {
   stats: DailyStats;
@@ -46,6 +48,13 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   // Flow score calculated from consumed vs target (demo)
   const flowScore = stats.flowScore ?? 0;
   const scoreIsOptimized = flowScore >= 75;
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    if (flowScore >= 80) {
+      setShowConfetti(true);
+    }
+  }, [flowScore]);
 
   // SVG gauge calculations
   const circumference = 2 * Math.PI * 42;
@@ -67,6 +76,7 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
 
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-nura-bg dark:bg-background-dark font-display text-nura-main dark:text-white animate-fade-in transition-colors duration-300">
+      <Confetti active={showConfetti} />
 
       {/* Header */}
       <header className="flex items-center px-6 py-5 justify-between z-20">
@@ -120,30 +130,38 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
       {/* Main Content */}
       <main className="flex-1 flex flex-col gap-8 pb-24">
 
-        {/* Segmented Control - Day/Week/Month */}
-        <div className="px-6">
-          <div className="flex h-12 w-full items-center justify-center rounded-2xl bg-white dark:bg-surface-dark p-1 border border-nura-border dark:border-white/5">
-            {(['day', 'week', 'month'] as PeriodTab[]).map((tab) => (
-              <label
-                key={tab}
-                className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-xl transition-all text-sm font-semibold ${period === tab
-                  ? 'bg-nura-petrol/10 dark:bg-white/10 text-nura-petrol dark:text-white'
-                  : 'text-nura-muted dark:text-white/40'
-                  }`}
-              >
-                <span>{t.flowScore[tab]}</span>
-                <input
-                  className="invisible w-0"
-                  name="period"
-                  type="radio"
-                  value={tab}
-                  checked={period === tab}
-                  onChange={() => setPeriod(tab)}
-                />
-              </label>
-            ))}
+        <LayoutGroup>
+          <div className="px-6">
+            <div className="flex h-12 w-full items-center justify-center rounded-2xl bg-white dark:bg-surface-dark p-1 border border-nura-border dark:border-white/5 relative overflow-hidden">
+              {(['day', 'week', 'month'] as PeriodTab[]).map((tab) => (
+                <label
+                  key={tab}
+                  className={`relative flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-xl transition-all text-sm font-semibold z-10 ${period === tab
+                    ? 'text-nura-petrol dark:text-white'
+                    : 'text-nura-muted dark:text-white/40 hover:text-nura-petrol/60 dark:hover:text-white/60'
+                    }`}
+                >
+                  <span className="relative z-10">{t.flowScore[tab]}</span>
+                  {period === tab && (
+                    <motion.div
+                      layoutId="tab-bg"
+                      className="absolute inset-0 bg-nura-petrol/10 dark:bg-white/10 z-0"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <input
+                    className="invisible w-0"
+                    name="period"
+                    type="radio"
+                    value={tab}
+                    checked={period === tab}
+                    onChange={() => setPeriod(tab)}
+                  />
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
+        </LayoutGroup>
 
         {/* Conditional Content Based on Period */}
         {period === 'day' ? (

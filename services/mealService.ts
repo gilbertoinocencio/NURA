@@ -1,6 +1,8 @@
 import { supabase } from './supabase';
 import { Meal, DailyStats } from '../types';
 import { INITIAL_STATS } from '../constants';
+import { StatsService } from './statsService';
+import { GamificationService } from './gamificationService';
 
 export const MealService = {
     // Upload image to Supabase Storage
@@ -62,8 +64,8 @@ export const MealService = {
 
         if (error) throw error;
 
-        // Also upsert daily log for faster stat retrieval
-        await this.updateDailyLog(userId, meal);
+        // Also sync daily stats for gamification
+        await this.syncDailyStats(userId);
     },
 
     // Get meals for a specific date
@@ -100,11 +102,30 @@ export const MealService = {
         }));
     },
 
-    // Helper to update daily aggregation
-    async updateDailyLog(userId: string, meal: Meal) {
-        // This is a simplified approach. Ideally we'd have a trigger or edge function.
-        // For now, we just rely on client re-fetching or optimistic updates.
-        // We will implement a proper DailyLog upsert if needed for hydration/notes.
-        return;
+    // Helper to sync daily stats table for gamification
+    async syncDailyStats(userId: string) {
+        try {
+            const date = new Date();
+            const stats = await StatsService.getDailyStats(userId, date);
+            const formattedDate = date.toISOString().split('T')[0];
+
+            // Upsert flow_stats
+            const { error: statsError } = await supabase
+                .from('flow_stats')
+                .upsert({
+                    user_id: userId,
+                    date: formattedDate,
+                    flow_score: stats.flowScore,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id, date' });
+
+            if (statsError) throw statsError;
+
+            // Trigger Gamification Sync
+            await GamificationService.updateStats(userId);
+
+        } catch (e) {
+            console.error("Error syncing daily stats:", e);
+        }
     }
 };
