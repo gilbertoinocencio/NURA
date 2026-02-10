@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from '../services/supabase';
 import { DailyStats, AppView } from '../types';
 import { USER_AVATAR } from '../constants';
 import { useLanguage } from '../i18n';
@@ -29,9 +30,11 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   onToggleTheme
 }) => {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [period, setPeriod] = useState<PeriodTab>('week');
   const [gameStats, setGameStats] = useState<GamificationStats | null>(null);
+  const [waterIntake, setWaterIntake] = useState(0);
+  const [weeklyScores, setWeeklyScores] = useState<{ date: string, score: number }[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -43,6 +46,38 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
     if (!user) return;
     const stats = await GamificationService.updateStats(user.id);
     setGameStats(stats);
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadDailyData();
+      loadWeeklyScores();
+    }
+  }, [user]);
+
+  const loadDailyData = async () => {
+    if (!user) return;
+    const today = new Date().toISOString().split('T')[0];
+    const { data } = await supabase
+      .from('daily_logs')
+      .select('water_intake')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .single();
+    if (data) setWaterIntake(data.water_intake || 0);
+  };
+
+  const loadWeeklyScores = async () => {
+    if (!user) return;
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    const { data } = await supabase
+      .from('flow_stats')
+      .select('date, flow_score')
+      .eq('user_id', user.id)
+      .gte('date', sevenDaysAgo.toISOString().split('T')[0])
+      .order('date', { ascending: true });
+    if (data) setWeeklyScores(data.map(d => ({ date: d.date, score: d.flow_score || 0 })));
   };
 
   // Flow score calculated from consumed vs target (demo)
@@ -74,6 +109,43 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
     }
   };
 
+  const generateChartPath = () => {
+    const scores = weeklyScores.length > 0 ? weeklyScores.map(s => s.score) : [0];
+    const width = 350;
+    const height = 150;
+    const points = scores.map((score, i) => ({
+      x: scores.length === 1 ? width / 2 : (i / (scores.length - 1)) * width,
+      y: height - (score / 100) * (height - 10) - 5
+    }));
+    if (points.length === 1) {
+      return { line: `M${points[0].x} ${points[0].y}`, area: `M${points[0].x} ${points[0].y} L${points[0].x} ${height} Z` };
+    }
+    let line = `M${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      const midX = (points[i - 1].x + points[i].x) / 2;
+      line += ` C ${midX} ${points[i - 1].y}, ${midX} ${points[i].y}, ${points[i].x} ${points[i].y}`;
+    }
+    const area = line + ` L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`;
+    return { line, area };
+  };
+
+  const getConsistency = () => {
+    if (weeklyScores.length < 2) return { label: '—', isPositive: true };
+    const flowDays = weeklyScores.filter(d => d.score >= 75).length;
+    const ratio = flowDays / weeklyScores.length;
+    if (ratio >= 0.7) return { label: 'Alta', isPositive: true };
+    if (ratio >= 0.4) return { label: 'Média', isPositive: true };
+    return { label: 'Baixa', isPositive: false };
+  };
+
+  const chartPaths = generateChartPath();
+  const consistency = getConsistency();
+  const waterIntakeL = (waterIntake / 1000).toFixed(1);
+  const waterPercent = Math.min((waterIntake / 2500) * 100, 100);
+  const proteinPercent = stats.targetMacros.protein > 0 ? Math.min((stats.macros.protein / stats.targetMacros.protein) * 100, 100) : 0;
+  const energyPercent = caloriePercent;
+  const displayName = profile?.display_name || user?.email?.split('@')[0] || 'Usuário';
+
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-nura-bg dark:bg-background-dark font-display text-nura-main dark:text-white animate-fade-in transition-colors duration-300">
       <Confetti active={showConfetti} />
@@ -97,7 +169,7 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
             <span className="text-xs text-nura-muted dark:text-slate-400 font-medium tracking-wide uppercase">
               {gameStats ? `Nível ${getLevelLabel(gameStats.level)}` : t.dashboard.welcomeBack}
             </span>
-            <h2 className="text-nura-main dark:text-white text-lg font-bold leading-tight">Alex</h2>
+            <h2 className="text-nura-main dark:text-white text-lg font-bold leading-tight">{displayName}</h2>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -321,11 +393,13 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
                 <div className="flex items-end justify-between gap-4 mb-2">
                   <div>
                     <p className="text-nura-muted dark:text-white/40 text-xs font-medium uppercase tracking-wider">{t.flowScore.consistency}</p>
-                    <p className="text-2xl font-bold text-nura-main dark:text-white">High</p>
+                    <p className="text-2xl font-bold text-nura-main dark:text-white">{consistency.label}</p>
                   </div>
-                  <div className="flex gap-1 items-center bg-green-500/10 px-2 py-1 rounded-lg">
-                    <span className="material-symbols-outlined text-green-500 dark:text-green-400 text-[16px]">trending_up</span>
-                    <span className="text-green-500 dark:text-green-400 text-xs font-bold">{t.flowScore.steady}</span>
+                  <div className={`flex gap-1 items-center px-2 py-1 rounded-lg ${consistency.isPositive ? 'bg-green-500/10' : 'bg-orange-500/10'}`}>
+                    <span className={`material-symbols-outlined text-[16px] ${consistency.isPositive ? 'text-green-500 dark:text-green-400' : 'text-orange-500 dark:text-orange-400'}`}>
+                      {consistency.isPositive ? 'trending_up' : 'trending_down'}
+                    </span>
+                    <span className={`text-xs font-bold ${consistency.isPositive ? 'text-green-500 dark:text-green-400' : 'text-orange-500 dark:text-orange-400'}`}>{t.flowScore.steady}</span>
                   </div>
                 </div>
 
@@ -346,11 +420,15 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
                     <line x1="0" y1="150" x2="350" y2="150" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
                     <line x1="0" y1="75" x2="350" y2="75" stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="4 4" />
                     {/* Area fill */}
-                    <path d="M0 120 C 30 120, 40 60, 60 60 C 80 60, 90 90, 110 90 C 130 90, 140 30, 160 30 C 180 30, 190 70, 210 70 C 230 70, 240 40, 260 40 C 280 40, 290 80, 310 80 C 330 80, 340 50, 350 50 L 350 150 L 0 150 Z" fill="url(#gradient-fill)" />
+                    <path d={chartPaths.area} fill="url(#gradient-fill)" />
                     {/* Line */}
-                    <path d="M0 120 C 30 120, 40 60, 60 60 C 80 60, 90 90, 110 90 C 130 90, 140 30, 160 30 C 180 30, 190 70, 210 70 C 230 70, 240 40, 260 40 C 280 40, 290 80, 310 80 C 330 80, 340 50, 350 50" fill="none" stroke="#0a90bd" strokeWidth="3" strokeLinecap="round" filter="url(#glow)" />
+                    <path d={chartPaths.line} fill="none" stroke="#0a90bd" strokeWidth="3" strokeLinecap="round" filter="url(#glow)" />
                     {/* Current Point */}
-                    <circle cx="350" cy="50" r="4" fill="#fff" />
+                    {weeklyScores.length > 0 && (() => {
+                      const lastScore = weeklyScores[weeklyScores.length - 1].score;
+                      const cy = 150 - (lastScore / 100) * 140 - 5;
+                      return <circle cx="350" cy={cy} r="4" fill="#fff" />;
+                    })()}
                   </svg>
                 </div>
 
@@ -377,12 +455,12 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
                   <div>
                     <p className="text-nura-muted dark:text-white/50 text-xs font-medium mb-1">{t.flowScore.hydration}</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold text-nura-main dark:text-white group-hover:text-blue-400 transition-colors">1.8</span>
+                      <span className="text-2xl font-bold text-nura-main dark:text-white group-hover:text-blue-400 transition-colors">{waterIntakeL}</span>
                       <span className="text-sm text-nura-muted dark:text-white/60">L</span>
                     </div>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-white/10 h-1.5 rounded-full mt-1">
-                    <div className="bg-blue-400 h-1.5 rounded-full w-[70%]" style={{ boxShadow: '0 0 8px rgba(96,165,250,0.5)' }} />
+                    <div className="bg-blue-400 h-1.5 rounded-full" style={{ width: `${waterPercent}%`, boxShadow: '0 0 8px rgba(96,165,250,0.5)' }} />
                   </div>
                 </div>
 
@@ -396,13 +474,13 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
                     <p className="text-nura-muted dark:text-white/50 text-xs font-medium mb-1">{t.dashboard.protein}</p>
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-bold text-nura-main dark:text-white group-hover:text-orange-400 transition-colors">
-                        {Math.round(stats.macros.protein) || 112}
+                        {Math.round(stats.macros.protein)}
                       </span>
                       <span className="text-sm text-nura-muted dark:text-white/60">g</span>
                     </div>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-white/10 h-1.5 rounded-full mt-1">
-                    <div className="bg-orange-400 h-1.5 rounded-full w-[85%]" style={{ boxShadow: '0 0 8px rgba(251,146,60,0.5)' }} />
+                    <div className="bg-orange-400 h-1.5 rounded-full" style={{ width: `${proteinPercent}%`, boxShadow: '0 0 8px rgba(251,146,60,0.5)' }} />
                   </div>
                 </div>
 
@@ -415,12 +493,12 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
                   <div>
                     <p className="text-nura-muted dark:text-white/50 text-xs font-medium mb-1">{t.flowScore.energy}</p>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold text-nura-main dark:text-white group-hover:text-yellow-400 transition-colors">2.4</span>
+                      <span className="text-2xl font-bold text-nura-main dark:text-white group-hover:text-yellow-400 transition-colors">{(stats.consumedCalories / 1000).toFixed(1)}</span>
                       <span className="text-sm text-nura-muted dark:text-white/60">kCal</span>
                     </div>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-white/10 h-1.5 rounded-full mt-1">
-                    <div className="bg-yellow-400 h-1.5 rounded-full w-[45%]" style={{ boxShadow: '0 0 8px rgba(250,204,21,0.5)' }} />
+                    <div className="bg-yellow-400 h-1.5 rounded-full" style={{ width: `${energyPercent}%`, boxShadow: '0 0 8px rgba(250,204,21,0.5)' }} />
                   </div>
                 </div>
               </div>
