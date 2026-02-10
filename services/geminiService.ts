@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { AIResponse } from '../types';
 
-const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY || '';
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(apiKey);
 
 // Helper to clean JSON string if Markdown code blocks are present
