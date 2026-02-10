@@ -80,6 +80,7 @@ const App: React.FC = () => {
           onNavigate={setView}
           onFabClick={() => setView(AppView.LOG)}
           activeView={view}
+          onBack={() => setView(AppView.HOME)}
         />
       )}
 

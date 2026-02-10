@@ -58,7 +58,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
       {/* Header */}
       <header className="flex items-center justify-between p-4 pt-12 pb-2">
-        <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] text-nura-main dark:text-white flex-1">{t.profile.title}</h2>
+        <h2 className="text-3xl font-serif italic text-nura-main dark:text-white flex-1">{t.profile.title}</h2>
         <div className="flex items-center gap-1">
           <button
             onClick={onToggleTheme}
@@ -109,8 +109,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   key={lang.code}
                   onClick={() => setLanguage(lang.code as 'en' | 'pt' | 'es')}
                   className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${language === lang.code
-                      ? 'bg-nura-petrol dark:bg-primary text-white shadow-md'
-                      : 'bg-nura-bg dark:bg-white/5 text-nura-muted dark:text-gray-400 hover:bg-nura-petrol/10 dark:hover:bg-primary/10'
+                    ? 'bg-nura-petrol dark:bg-primary text-white shadow-md'
+                    : 'bg-nura-bg dark:bg-white/5 text-nura-muted dark:text-gray-400 hover:bg-nura-petrol/10 dark:hover:bg-primary/10'
                     }`}
                 >
                   {lang.label}

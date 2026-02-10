@@ -6,39 +6,48 @@ interface SocialFeedProps {
   onNavigate: (view: AppView) => void;
   onFabClick: () => void;
   activeView: AppView;
+  onBack: () => void;
 }
 
-export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, activeView }) => {
+export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, activeView, onBack }) => {
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-24 bg-nura-bg dark:bg-background-dark font-jakarta animate-fade-in transition-colors duration-300">
-      
-      {/* TopAppBar - Cleaned up to avoid overlapping functions */}
-      <div className="sticky top-0 z-50 flex items-center bg-nura-bg/95 dark:bg-background-dark/95 backdrop-blur-md p-4 pb-2 justify-between border-b border-nura-border dark:border-white/5 transition-colors">
-        <div className="flex w-10 shrink-0 items-center justify-start">
-           {/* Replaced Menu with Logo Icon to avoid nav confusion */}
-           <div className="size-8 rounded-full bg-nura-petrol/10 dark:bg-primary/10 flex items-center justify-center text-nura-petrol dark:text-primary">
-              <span className="material-symbols-outlined text-lg">spa</span>
-           </div>
+
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-nura-bg/95 dark:bg-background-dark/95 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-nura-border dark:border-white/5 transition-colors">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onBack}
+            className="flex items-center justify-center size-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors -ml-2 text-nura-main dark:text-white"
+          >
+            <span className="material-symbols-outlined text-[24px]">arrow_back</span>
+          </button>
+          <h1 className="text-nura-main dark:text-white text-xl font-bold tracking-tight">Community</h1>
         </div>
-        <h2 className="text-nura-main dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Feed the Flow</h2>
+        <div className="flex items-center gap-2">
+          {/* Replaced Menu with Logo Icon to avoid nav confusion */}
+          <div className="size-8 rounded-full bg-nura-petrol/10 dark:bg-primary/10 flex items-center justify-center text-nura-petrol dark:text-primary">
+            <span className="material-symbols-outlined text-lg">spa</span>
+          </div>
+        </div>
         <div className="flex w-10 items-center justify-end">
           <button className="flex items-center justify-center size-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-nura-main dark:text-white">
             <span className="material-symbols-outlined">filter_list</span>
           </button>
         </div>
-      </div>
+      </header>
 
       {/* StoryCarousel (Hero Progress) */}
-      <div className="flex w-full overflow-x-auto no-scrollbar px-4 py-4 space-x-4">
+      < div className="flex w-full overflow-x-auto no-scrollbar px-4 py-4 space-x-4" >
         {/* Add Flow Button - Updated to look like 'My Story' */}
-        <div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group">
-          <div 
+        < div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group" >
+          <div
             onClick={onFabClick}
             className="relative w-full aspect-[3/4] rounded-2xl bg-nura-card dark:bg-surface-dark border border-nura-border dark:border-white/10 flex items-center justify-center overflow-hidden transition-transform group-active:scale-95"
           >
-            <div 
-               className="absolute inset-0 bg-cover bg-center opacity-50" 
-               style={{ backgroundImage: `url("${USER_AVATAR}")` }}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-50"
+              style={{ backgroundImage: `url("${USER_AVATAR}")` }}
             ></div>
             <div className="absolute inset-0 bg-black/20"></div>
             <div className="size-10 rounded-full bg-nura-petrol dark:bg-primary flex items-center justify-center text-white shadow-lg border-2 border-nura-bg dark:border-background-dark z-10">
@@ -46,56 +55,56 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
             </div>
           </div>
           <p className="text-nura-main dark:text-white text-xs font-semibold truncate">Meu Flow</p>
-        </div>
-        
+        </div >
+
         {/* Story 1 */}
-        <div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group">
+        < div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group" >
           <div className="w-full relative aspect-[3/4] rounded-2xl p-0.5 bg-gradient-to-tr from-nura-petrol to-nura-brown dark:from-primary dark:to-purple-500">
             <div className="w-full h-full rounded-[14px] border-2 border-nura-bg dark:border-background-dark overflow-hidden relative">
-               <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOE528zHEt9w-EHn0aCAedXCltxL-DxvEgPh22RANfUobVWAeH2lnmJx_sDchnODfgiUVcac6a5oo2_4LQ-J8nUGn71fA-Ptcv1sRQfVXPVpxgpFRheXyrB4s9UxBUFJLULVsMe2N-YANnr4x831RFi9x8yFrn2wxPRAiyiScTBcYqL5Cgb2LUX-mWNuzvvFMMWIndAzrr8uT4gfsWzqiR_oDNxAdIkS1fc3m3sv1YZaGR8nIA7YdG9V7pGqKlsnAiuLHVe67683E")' }}></div>
+              <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOE528zHEt9w-EHn0aCAedXCltxL-DxvEgPh22RANfUobVWAeH2lnmJx_sDchnODfgiUVcac6a5oo2_4LQ-J8nUGn71fA-Ptcv1sRQfVXPVpxgpFRheXyrB4s9UxBUFJLULVsMe2N-YANnr4x831RFi9x8yFrn2wxPRAiyiScTBcYqL5Cgb2LUX-mWNuzvvFMMWIndAzrr8uT4gfsWzqiR_oDNxAdIkS1fc3m3sv1YZaGR8nIA7YdG9V7pGqKlsnAiuLHVe67683E")' }}></div>
             </div>
           </div>
           <p className="text-nura-main dark:text-white text-xs font-medium truncate">Day 12</p>
-        </div>
-        
+        </div >
+
         {/* Story 2 */}
-        <div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group">
+        < div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group" >
           <div className="w-full relative aspect-[3/4] rounded-2xl p-0.5 bg-gray-200 dark:bg-white/10">
             <div className="w-full h-full rounded-[14px] border-2 border-nura-bg dark:border-background-dark overflow-hidden relative">
-               <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCB-Sf94zMXP3pt9OI6UIf6mGktEym6ouWfnEvcU7BWuHkHBEv-XgtLt_Us-M1gk2hgpF5BHqc8X4N6gLOLt6CZq7JBRu3o4hcA6J2e8unDl38Mw-VMA8K20FGlkyisvEAa6CdfjJTKRUELXIXsPtQZYC0O3S9I685LxmNDjNB0dffi18iLFOe3nO72-DmU5eqRI5LuvslyeGKw5b6OJBvHfcAaTZ-7GwnwguC-V_FAEFg29wRoYfh6zeNU9gXhRpphvZmZkt8xsNA")' }}></div>
+              <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCB-Sf94zMXP3pt9OI6UIf6mGktEym6ouWfnEvcU7BWuHkHBEv-XgtLt_Us-M1gk2hgpF5BHqc8X4N6gLOLt6CZq7JBRu3o4hcA6J2e8unDl38Mw-VMA8K20FGlkyisvEAa6CdfjJTKRUELXIXsPtQZYC0O3S9I685LxmNDjNB0dffi18iLFOe3nO72-DmU5eqRI5LuvslyeGKw5b6OJBvHfcAaTZ-7GwnwguC-V_FAEFg29wRoYfh6zeNU9gXhRpphvZmZkt8xsNA")' }}></div>
             </div>
           </div>
           <p className="text-nura-muted dark:text-slate-400 text-xs font-medium truncate">Workout</p>
-        </div>
-        
+        </div >
+
         {/* Story 3 */}
-        <div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group">
+        < div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group" >
           <div className="w-full relative aspect-[3/4] rounded-2xl p-0.5 bg-gray-200 dark:bg-white/10">
             <div className="w-full h-full rounded-[14px] border-2 border-nura-bg dark:border-background-dark overflow-hidden relative">
-               <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXUj0qHaXjHO0zZCwohw-bjtEdyZ78m74ibqFa72n_GaE4R2GRrVa6-jT61H0hylyD97zdU0VdUsG2mpAGDqo0mRJz5WcjPFJfRoxZmP_4aqtyAe6UNDbx95ps-v9c2m2FyVHW3uXn7yG0X1WLmFcqb8Hmuijo0jCv-fMXy8tSfk8oL6VZvaOSczQjAmaCLYq5dRuZK-UrmDGvooMM-0f3GWewOtqv084crc755OJnDEaSZq4_jIDyKI9_lQC_kojsYc-JGbOt1AI")' }}></div>
+              <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXUj0qHaXjHO0zZCwohw-bjtEdyZ78m74ibqFa72n_GaE4R2GRrVa6-jT61H0hylyD97zdU0VdUsG2mpAGDqo0mRJz5WcjPFJfRoxZmP_4aqtyAe6UNDbx95ps-v9c2m2FyVHW3uXn7yG0X1WLmFcqb8Hmuijo0jCv-fMXy8tSfk8oL6VZvaOSczQjAmaCLYq5dRuZK-UrmDGvooMM-0f3GWewOtqv084crc755OJnDEaSZq4_jIDyKI9_lQC_kojsYc-JGbOt1AI")' }}></div>
             </div>
           </div>
           <p className="text-nura-muted dark:text-slate-400 text-xs font-medium truncate">Sunday Prep</p>
-        </div>
+        </div >
 
         {/* Story 4 */}
-        <div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group">
+        < div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group" >
           <div className="w-full relative aspect-[3/4] rounded-2xl p-0.5 bg-gradient-to-tr from-nura-petrol to-nura-brown dark:from-primary dark:to-purple-500">
             <div className="w-full h-full rounded-[14px] border-2 border-nura-bg dark:border-background-dark overflow-hidden relative">
-               <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuClrspA-hAwyWGcZVndGSbI6fhYdhTn3IXp-jpspXbV6ULuzy2jNHnmlqkWQzFF2fiYn6EW_r021c6BkDj9oCt4J0ISkyxwTDmP23EieddvAY2yiXNUxkhiIf5NB_ZjRn3iOjgED2CBkM1JndNHZgFwbDm1YFRMhddnhzCs22Ff2YAenpsJv-XUYohw8jj8Z2ZqQDPQCrXTqGqtZwEeQzmaRcab16VqzyR84wI9htznFzqgpuXdrnPfW5RUUaTkiIo1GFwfeGJ-cPw")' }}></div>
+              <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuClrspA-hAwyWGcZVndGSbI6fhYdhTn3IXp-jpspXbV6ULuzy2jNHnmlqkWQzFF2fiYn6EW_r021c6BkDj9oCt4J0ISkyxwTDmP23EieddvAY2yiXNUxkhiIf5NB_ZjRn3iOjgED2CBkM1JndNHZgFwbDm1YFRMhddnhzCs22Ff2YAenpsJv-XUYohw8jj8Z2ZqQDPQCrXTqGqtZwEeQzmaRcab16VqzyR84wI9htznFzqgpuXdrnPfW5RUUaTkiIo1GFwfeGJ-cPw")' }}></div>
             </div>
           </div>
           <p className="text-nura-main dark:text-white text-xs font-medium truncate">Flow State</p>
-        </div>
-      </div>
+        </div >
+      </div >
 
       {/* Trending Section */}
-      <div className="px-4 pb-2 pt-4">
+      < div className="px-4 pb-2 pt-4" >
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-nura-main dark:text-white text-xl font-bold leading-tight">Trending Flows</h2>
           <button className="text-nura-petrol dark:text-primary text-sm font-semibold hover:opacity-80">Ver todos</button>
         </div>
-        
+
         {/* Featured Card */}
         <div className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-nura-border dark:border-white/5 bg-white dark:bg-surface-dark group">
           <div className="absolute top-3 right-3 z-10 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full border border-white/10">
@@ -127,10 +136,10 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       {/* Community Masonry Grid */}
-      <div className="px-4 py-4">
+      < div className="px-4 py-4" >
         <h2 className="text-nura-main dark:text-white text-xl font-bold leading-tight mb-3">Comunidade</h2>
         <div className="grid grid-cols-2 gap-3">
           {/* Item 1 */}
@@ -148,7 +157,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
               </div>
             </div>
           </div>
-          
+
           {/* Item 2 */}
           <div className="relative rounded-2xl overflow-hidden aspect-[4/5] group cursor-pointer shadow-sm">
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuB0lv5F1tj3HqrVUC5AUq6pQH6QFG3uaQAjAu59Bg52rqyXqJmp__A2NsLoJCLbS-G-C3b7ix3Uye9Z1TOqaeNz6Vu1c8qkdZoT9cWI0RxwOoVwmjIEvK7DDUB7Tt0q7P_ZQF7cxJ6mXkl_Mq493yxOsBEvvQMkAjBrMH20BEBaT3ZIBSjUqBNfXc_mZlYUq_WPZcx5nvRloU8EgrgBhAILpb0dFCLbhQma-_Ct0RCO1J5Y5gZLQtPXXjcVFqLXNLkk6t7bCaf4hh8")' }}></div>
@@ -159,12 +168,12 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
                   <p className="text-gray-300 text-[10px]">@mike_runs</p>
                 </div>
                 <button className="size-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-nura-petrol dark:text-primary hover:bg-nura-petrol dark:hover:bg-primary hover:text-white transition-colors">
-                   <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>water_drop</span>
+                  <span className="material-symbols-outlined text-[18px] filled" style={{ fontVariationSettings: "'FILL' 1" }}>water_drop</span>
                 </button>
               </div>
             </div>
           </div>
-          
+
           {/* Item 3 */}
           <div className="relative rounded-2xl overflow-hidden aspect-[4/6] group cursor-pointer shadow-sm">
             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQ2MEd1AxnFiHWFT54qghy86i3e0HK60idaw6GUmgHHPsKKtcNbSIUpkIgfiozkI07_nWpRYyxLyK8HCIveYOjY0vWXTwSWaIXpZU9QQmelo8ldvUIUEO-I_OTYDpJ87jTbWWDk6qvVwyevhojvfw39hj_ua3W0A5ux5GrpDvOg0JcoiszfoUwipVC76ivUXUHGJ-XwroiuiejAyUGCfLXLwCs0HNqiPvNZOpHb18LOxfU_uXt1i4zVSUQk7Tjw23mO7rXhDplK7k")' }}></div>
@@ -197,7 +206,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };

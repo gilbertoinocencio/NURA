@@ -66,6 +66,13 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
             <span className="absolute top-2 right-2 size-2 bg-nura-petrol dark:bg-primary rounded-full" />
           </button>
           <button
+            onClick={() => onNavClick(AppView.FEED)}
+            className="flex items-center justify-center size-10 rounded-full bg-white dark:bg-surface-dark border border-nura-border dark:border-transparent hover:bg-nura-petrol-light dark:hover:bg-primary/10 transition-colors text-nura-petrol dark:text-primary shadow-sm dark:shadow-none"
+            title="Community Feed"
+          >
+            <span className="material-symbols-outlined text-[20px]">groups</span>
+          </button>
+          <button
             onClick={onToggleTheme}
             className="flex items-center justify-center size-10 rounded-full bg-white dark:bg-surface-dark border border-nura-border dark:border-transparent hover:bg-nura-petrol-light dark:hover:bg-primary/10 transition-colors text-nura-muted dark:text-slate-300 shadow-sm dark:shadow-none"
           >
@@ -86,8 +93,8 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
               <label
                 key={tab}
                 className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-xl transition-all text-sm font-semibold ${period === tab
-                    ? 'bg-nura-petrol/10 dark:bg-white/10 text-nura-petrol dark:text-white'
-                    : 'text-nura-muted dark:text-white/40'
+                  ? 'bg-nura-petrol/10 dark:bg-white/10 text-nura-petrol dark:text-white'
+                  : 'text-nura-muted dark:text-white/40'
                   }`}
               >
                 <span>{t.flowScore[tab]}</span>

@@ -25,10 +25,10 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl bg-journal-bg dark:bg-journal-bg-dark font-display text-journal-text dark:text-white animate-fade-in transition-colors duration-500">
-      
+
       {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-journal-bg/95 dark:bg-journal-bg-dark/95 backdrop-blur-sm transition-colors duration-300">
-        <button 
+        <button
           onClick={onBack}
           className="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-journal-text dark:text-white"
         >
@@ -41,7 +41,7 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
       </header>
 
       <main className="flex-1 flex flex-col px-6 pb-32 pt-4">
-        
+
         {/* Date & Title */}
         <div className="flex flex-col items-center mb-10 animate-fade-in-up">
           <p className="text-journal-sub dark:text-gray-400 text-xs font-semibold tracking-widest uppercase mb-2">Quinta-feira, 24 Out</p>
@@ -80,19 +80,19 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
             ].map((item) => {
               const isActive = energy === item.label;
               return (
-                <button 
+                <button
                   key={item.label}
                   onClick={() => setEnergy(item.label as EnergyLevel)}
                   className="group flex flex-col items-center gap-3 w-1/4 transition-all"
                 >
                   <div className={`size-14 rounded-full flex items-center justify-center border transition-all duration-300 shadow-sm
-                    ${item.special 
-                      ? isActive 
-                         ? 'bg-journal-primary border-journal-primary text-white scale-110 shadow-journal-glow'
-                         : 'bg-journal-surface dark:bg-journal-surface-dark border-journal-primary/50 text-journal-primary hover:bg-journal-primary hover:text-white'
+                    ${item.special
+                      ? isActive
+                        ? 'bg-journal-primary border-journal-primary text-white scale-110 shadow-journal-glow'
+                        : 'bg-journal-surface dark:bg-journal-surface-dark border-journal-primary/50 text-journal-primary hover:bg-journal-primary hover:text-white'
                       : isActive
-                         ? 'bg-journal-accent border-journal-accent text-white scale-105'
-                         : 'bg-journal-surface dark:bg-journal-surface-dark border-gray-200 dark:border-gray-700 text-gray-400 hover:border-journal-accent hover:text-journal-accent'
+                        ? 'bg-journal-accent border-journal-accent text-white scale-105'
+                        : 'bg-journal-surface dark:bg-journal-surface-dark border-gray-200 dark:border-gray-700 text-gray-400 hover:border-journal-accent hover:text-journal-accent'
                     }`}
                   >
                     <span className="material-symbols-outlined text-[26px]">{item.icon}</span>
@@ -112,19 +112,19 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
             <h3 className="text-journal-text dark:text-white text-lg font-medium">Registro Visual</h3>
             <span className="text-[10px] uppercase tracking-wider text-journal-accent font-bold bg-journal-accent/10 px-3 py-1.5 rounded-full">Feed the Flow</span>
           </div>
-          
+
           <label className={`relative block w-full aspect-[4/3] rounded-2xl border border-dashed hover:border-journal-accent dark:hover:border-journal-accent transition-all cursor-pointer group overflow-hidden bg-journal-surface dark:bg-journal-surface-dark shadow-sm ${imagePreview ? 'border-transparent' : 'border-gray-300 dark:border-gray-700 hover:bg-journal-accent-light/30 dark:hover:bg-journal-accent/10'}`}>
-            <input 
-              accept="image/*" 
-              className="hidden" 
-              type="file" 
+            <input
+              accept="image/*"
+              className="hidden"
+              type="file"
               onChange={handleImageUpload}
             />
-            
+
             {imagePreview ? (
               <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${imagePreview})` }}>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                   <span className="material-symbols-outlined text-white text-4xl">edit</span>
+                  <span className="material-symbols-outlined text-white text-4xl">edit</span>
                 </div>
               </div>
             ) : (
@@ -132,7 +132,7 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
                 <div className="size-16 rounded-full bg-journal-bg dark:bg-journal-bg-dark flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-gray-100 dark:border-gray-800">
                   <span className="material-symbols-outlined text-journal-accent text-3xl font-light">add_a_photo</span>
                 </div>
-                <p className="text-sm font-semibold text-journal-text dark:text-white mb-1">Capture o prato</p>
+                <h1 className="text-xl font-serif italic text-nura-main dark:text-white mb-1">Capture seu Flow</h1>
                 <p className="text-xs text-journal-sub dark:text-gray-500 max-w-[160px] leading-relaxed">Registre a estética da sua nutrição de hoje.</p>
               </div>
             )}
@@ -143,9 +143,9 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
         <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <h3 className="text-journal-text dark:text-white text-lg font-medium mb-3 px-1">Notas do Dia</h3>
           <div className="relative group">
-            <textarea 
-              className="w-full bg-transparent text-journal-text dark:text-white placeholder-gray-400 dark:placeholder-gray-600 text-base leading-relaxed border-0 border-b border-gray-200 dark:border-gray-700 focus:ring-0 focus:border-journal-accent px-1 py-3 resize-none transition-colors" 
-              placeholder="Como você alimentou seu flow hoje? Escreva brevemente..." 
+            <textarea
+              className="w-full bg-transparent text-journal-text dark:text-white placeholder-gray-400 dark:placeholder-gray-600 text-base leading-relaxed border-0 border-b border-gray-200 dark:border-gray-700 focus:ring-0 focus:border-journal-accent px-1 py-3 resize-none transition-colors"
+              placeholder="Como você alimentou seu flow hoje? Escreva brevemente..."
               rows={3}
             ></textarea>
             <div className="absolute bottom-0 left-0 w-0 h-px bg-journal-accent transition-all duration-500 group-focus-within:w-full"></div>
@@ -157,9 +157,9 @@ export const DailyJournal: React.FC<DailyJournalProps> = ({ onBack, onNavigate }
       {/* Footer Action */}
       <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-journal-bg via-journal-bg/95 to-transparent dark:from-journal-bg-dark dark:via-journal-bg-dark/95 pt-16 pb-8 px-6 pointer-events-none flex justify-center z-40">
         <div className="w-full max-w-md pointer-events-auto animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-          <button 
-             onClick={() => onNavigate(AppView.SHARE)}
-             className="w-full bg-journal-primary hover:bg-[#16454D] dark:bg-primary dark:hover:bg-primary-old active:scale-[0.98] text-white font-medium text-lg py-4 rounded-xl shadow-journal-glow flex items-center justify-center gap-3 transition-all duration-300"
+          <button
+            onClick={() => onNavigate(AppView.SHARE)}
+            className="w-full bg-journal-primary hover:bg-[#16454D] dark:bg-primary dark:hover:bg-primary-old active:scale-[0.98] text-white font-medium text-lg py-4 rounded-xl shadow-journal-glow flex items-center justify-center gap-3 transition-all duration-300"
           >
             <span>Preparar para Compartilhar</span>
             <span className="material-symbols-outlined text-xl">ios_share</span>
