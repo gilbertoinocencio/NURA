@@ -9,7 +9,7 @@ const cleanJsonString = (str: string) => {
   return str.replace(/```json/g, '').replace(/```/g, '').trim();
 };
 
-const MODEL_NAME = "gemini-2.0-flash";
+const MODEL_NAME = "gemini-1.5-flash";
 
 export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
   console.log("Gemini Service: Checking API Key...");
