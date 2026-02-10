@@ -9,6 +9,8 @@ interface AuthContextType {
     loading: boolean;
     updateProfile: (updates: any) => Promise<void>;
     signInWithGoogle: () => Promise<void>;
+    signInWithEmail: (email: string, password: string) => Promise<void>;
+    signUpWithEmail: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -80,7 +82,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             if (error) throw error;
         } catch (error) {
-            console.error('Error signing in:', error);
+            console.error('Error signing in with Google:', error);
+            throw error;
+        }
+    };
+
+    const signInWithEmail = async (email: string, password: string) => {
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error signing in with Email:', error);
+            throw error;
+        }
+    };
+
+    const signUpWithEmail = async (email: string, password: string) => {
+        try {
+            const { error } = await supabase.auth.signUp({
+                email,
+                password
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error signing up with Email:', error);
+            throw error;
         }
     };
 
@@ -94,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, profile, loading, updateProfile, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, session, profile, loading, updateProfile, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut }}>
             {children}
         </AuthContext.Provider>
     );

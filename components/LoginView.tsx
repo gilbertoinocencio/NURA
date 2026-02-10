@@ -2,15 +2,42 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LoginView: React.FC = () => {
-    const { signInWithGoogle, loading } = useAuth();
+    const { signInWithGoogle, signInWithEmail, signUpWithEmail, loading } = useAuth();
     const [error, setError] = useState<string | null>(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isSignUp, setIsSignUp] = useState(false);
+    const [authLoading, setAuthLoading] = useState(false);
 
-    const handleLogin = async () => {
+    const handleGoogleLogin = async () => {
         try {
             setError(null);
             await signInWithGoogle();
         } catch (err: any) {
-            setError(err.message || 'Error signing in');
+            setError(err.message || 'Error signing in with Google');
+        }
+    };
+
+    const handleEmailAuth = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email || !password) {
+            setError("Preencha email e senha");
+            return;
+        }
+        setAuthLoading(true);
+        setError(null);
+        try {
+            if (isSignUp) {
+                await signUpWithEmail(email, password);
+                // Supabase might require email confirmation, but usually logs in if disabled
+                setError("Conta criada! Verifique seu email ou tente entrar.");
+            } else {
+                await signInWithEmail(email, password);
+            }
+        } catch (err: any) {
+            setError(err.message || 'Erro de autenticação');
+        } finally {
+            setAuthLoading(false);
         }
     };
 
@@ -36,8 +63,55 @@ export const LoginView: React.FC = () => {
 
                 {/* Action */}
                 <div className="w-full flex flex-col gap-4">
+                    {/* Email Form */}
+                    <form onSubmit={handleEmailAuth} className="w-full flex flex-col gap-3">
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full h-12 px-4 rounded-xl border border-nura-border dark:border-white/10 bg-white dark:bg-black/20 text-nura-main dark:text-white placeholder-nura-muted focus:outline-none focus:ring-2 focus:ring-nura-petrol/20 transition-all"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Senha"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full h-12 px-4 rounded-xl border border-nura-border dark:border-white/10 bg-white dark:bg-black/20 text-nura-main dark:text-white placeholder-nura-muted focus:outline-none focus:ring-2 focus:ring-nura-petrol/20 transition-all"
+                        />
+                        <button
+                            type="submit"
+                            disabled={authLoading}
+                            className="w-full h-12 bg-nura-petrol dark:bg-primary text-white rounded-xl font-semibold shadow-lg shadow-nura-petrol/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {authLoading ? 'Processando...' : (isSignUp ? 'Criar Conta' : 'Entrar')}
+                        </button>
+                    </form>
+
+                    <div className="w-full flex items-center justify-between text-sm">
+                        <span className="text-nura-muted">
+                            {isSignUp ? 'Já tem conta?' : 'Não tem conta?'}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setIsSignUp(!isSignUp)}
+                            className="text-nura-petrol dark:text-primary font-semibold hover:underline"
+                        >
+                            {isSignUp ? 'Fazer Login' : 'Criar nova conta'}
+                        </button>
+                    </div>
+
+                    <div className="relative w-full py-2">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-200 dark:border-white/10"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-nura-bg dark:bg-background-dark text-nura-muted">Ou continue com</span>
+                        </div>
+                    </div>
+
                     <button
-                        onClick={handleLogin}
+                        onClick={handleGoogleLogin}
                         className="w-full h-14 bg-white dark:bg-surface-dark border border-nura-border dark:border-white/10 rounded-xl flex items-center justify-center gap-3 shadow-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-nura-main dark:text-white font-semibold relative overflow-hidden group"
                     >
                         <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
