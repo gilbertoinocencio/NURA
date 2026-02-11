@@ -117,6 +117,16 @@ export interface Translations {
             health: string;
             performance: string;
         };
+        flowStatus: string;
+        last3Months: string;
+        flowDays: string;
+        meals: string;
+        consistency: string;
+        low: string;
+        high: string;
+        recentAchievements: string;
+        defineProfile: string;
+        signOut: string;
     };
 
     // Quarterly Plan
@@ -279,6 +289,16 @@ export const translations: Record<Language, Translations> = {
                 health: 'Health',
                 performance: 'Performance',
             },
+            flowStatus: 'Flow Status',
+            last3Months: 'Last 3 months',
+            flowDays: 'Flow Days',
+            meals: 'Meals',
+            consistency: 'Consistency',
+            low: 'Low',
+            high: 'High',
+            recentAchievements: 'Recent Achievements',
+            defineProfile: 'Set up your profile',
+            signOut: 'Sign Out',
         },
         quarterlyPlan: {
             feedTheFlow: 'Feed the Flow',
@@ -431,6 +451,16 @@ export const translations: Record<Language, Translations> = {
                 health: 'Saúde',
                 performance: 'Performance',
             },
+            flowStatus: 'Status do Flow',
+            last3Months: 'Últimos 3 meses',
+            flowDays: 'Dias em Flow',
+            meals: 'Refeições',
+            consistency: 'Consistência',
+            low: 'Baixo',
+            high: 'Alto',
+            recentAchievements: 'Conquistas Recentes',
+            defineProfile: 'Defina seu perfil',
+            signOut: 'Sair da Conta',
         },
         quarterlyPlan: {
             feedTheFlow: 'Feed the Flow',
@@ -583,6 +613,16 @@ export const translations: Record<Language, Translations> = {
                 health: 'Salud',
                 performance: 'Rendimiento',
             },
+            flowStatus: 'Estado del Flow',
+            last3Months: 'Últimos 3 meses',
+            flowDays: 'Días en Flow',
+            meals: 'Comidas',
+            consistency: 'Consistencia',
+            low: 'Bajo',
+            high: 'Alto',
+            recentAchievements: 'Logros Recientes',
+            defineProfile: 'Configura tu perfil',
+            signOut: 'Cerrar Sesión',
         },
         quarterlyPlan: {
             feedTheFlow: 'Feed the Flow',
