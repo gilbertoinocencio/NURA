@@ -225,6 +225,45 @@ export interface Translations {
         saveJournal: string;
     };
 
+    // Profile Config
+    profileConfig: {
+        title: string;
+        subtitle: string;
+        bodyData: string;
+        weight: string;
+        height: string;
+        age: string;
+        gender: string;
+        biotype: string;
+        ectomorph: string;
+        ectomorphDesc: string;
+        mesomorph: string;
+        mesomorphDesc: string;
+        endomorph: string;
+        endomorphDesc: string;
+        mainGoal: string;
+        aesthetic: string;
+        health: string;
+        performance: string;
+        activityLevel: string;
+        sedentary: string;
+        moderate: string;
+        intense: string;
+        calculateMacros: string;
+        saveError: string;
+    };
+
+    // Integrations
+    integrations: {
+        title: string;
+        headline: string;
+        subtitle: string;
+        connected: string;
+        pending: string;
+        disconnected: string;
+        securityNote: string;
+    };
+
     // Macros
     macros: {
         prot: string;
@@ -442,6 +481,41 @@ export const translations: Record<Language, Translations> = {
             saveError: 'Error saving journal',
             saveJournal: 'Save Journal',
         },
+        profileConfig: {
+            title: 'Biometric Profile',
+            subtitle: 'Feed the Flow. Personalize NURA intelligence for your metabolism.',
+            bodyData: 'Body Data',
+            weight: 'Weight (kg)',
+            height: 'Height (cm)',
+            age: 'Age',
+            gender: 'Gender',
+            biotype: 'Your Biotype',
+            ectomorph: 'Ectomorph',
+            ectomorphDesc: 'Light frame, fast metabolism.',
+            mesomorph: 'Mesomorph',
+            mesomorphDesc: 'Athletic, gains muscle easily.',
+            endomorph: 'Endomorph',
+            endomorphDesc: 'Broad frame, slow metabolism.',
+            mainGoal: 'Main Goal',
+            aesthetic: 'Aesthetic',
+            health: 'Health',
+            performance: 'Performance',
+            activityLevel: 'Activity Level',
+            sedentary: 'Sedentary',
+            moderate: 'Moderate',
+            intense: 'Intense',
+            calculateMacros: 'Calculate Macros',
+            saveError: 'Error saving profile. Please try again.',
+        },
+        integrations: {
+            title: 'Integrations',
+            headline: 'Connect your <accent>ecosystem</accent> for a smarter Flow',
+            subtitle: 'Centralize your health data to maximize results. NURA syncs in real-time to adapt your nutrition.',
+            connected: 'Connected',
+            pending: 'Sync pending',
+            disconnected: 'Disconnected',
+            securityNote: 'Encrypted data and secure sync',
+        },
         macros: {
             prot: 'Prot',
             carb: 'Carb',
@@ -655,6 +729,41 @@ export const translations: Record<Language, Translations> = {
             saveError: 'Erro ao salvar diário',
             saveJournal: 'Salvar Diário',
         },
+        profileConfig: {
+            title: 'Perfil Biométrico',
+            subtitle: 'Feed the Flow. Personalize a inteligência da NURA para o seu metabolismo.',
+            bodyData: 'Dados Corporais',
+            weight: 'Peso (kg)',
+            height: 'Altura (cm)',
+            age: 'Idade',
+            gender: 'Gênero',
+            biotype: 'Seu Biotipo',
+            ectomorph: 'Ectomorfo',
+            ectomorphDesc: 'Estrutura leve, metabolismo acelerado.',
+            mesomorph: 'Mesomorfo',
+            mesomorphDesc: 'Atlético, ganha músculos facilmente.',
+            endomorph: 'Endomorfo',
+            endomorphDesc: 'Estrutura larga, metabolismo lento.',
+            mainGoal: 'Objetivo Principal',
+            aesthetic: 'Estética',
+            health: 'Saúde',
+            performance: 'Performance',
+            activityLevel: 'Nível de Atividade',
+            sedentary: 'Sedentário',
+            moderate: 'Moderado',
+            intense: 'Intenso',
+            calculateMacros: 'Calcular Macros',
+            saveError: 'Erro ao salvar perfil. Tente novamente.',
+        },
+        integrations: {
+            title: 'Integrações',
+            headline: 'Conecte seu <accent>ecossistema</accent> para um Flow inteligente',
+            subtitle: 'Centralize seus dados de saúde para maximizar seus resultados. O NURA sincroniza em tempo real para adaptar sua nutrição.',
+            connected: 'Conectado',
+            pending: 'Sincronização pendente',
+            disconnected: 'Desconectado',
+            securityNote: 'Dados criptografados e sincronização segura',
+        },
         macros: {
             prot: 'Prot',
             carb: 'Carb',
@@ -867,6 +976,41 @@ export const translations: Record<Language, Translations> = {
             save: 'Guardar',
             saveError: 'Error al guardar diario',
             saveJournal: 'Guardar Diario',
+        },
+        profileConfig: {
+            title: 'Perfil Biométrico',
+            subtitle: 'Feed the Flow. Personaliza la inteligencia de NURA para tu metabolismo.',
+            bodyData: 'Datos Corporales',
+            weight: 'Peso (kg)',
+            height: 'Altura (cm)',
+            age: 'Edad',
+            gender: 'Género',
+            biotype: 'Tu Biotipo',
+            ectomorph: 'Ectomorfo',
+            ectomorphDesc: 'Estructura ligera, metabolismo rápido.',
+            mesomorph: 'Mesomorfo',
+            mesomorphDesc: 'Atlético, gana músculo fácilmente.',
+            endomorph: 'Endomorfo',
+            endomorphDesc: 'Estructura ancha, metabolismo lento.',
+            mainGoal: 'Objetivo Principal',
+            aesthetic: 'Estética',
+            health: 'Salud',
+            performance: 'Rendimiento',
+            activityLevel: 'Nivel de Actividad',
+            sedentary: 'Sedentario',
+            moderate: 'Moderado',
+            intense: 'Intenso',
+            calculateMacros: 'Calcular Macros',
+            saveError: 'Error al guardar perfil. Inténtalo de nuevo.',
+        },
+        integrations: {
+            title: 'Integraciones',
+            headline: 'Conecta tu <accent>ecosistema</accent> para un Flow inteligente',
+            subtitle: 'Centraliza tus datos de salud para maximizar resultados. NURA sincroniza en tiempo real para adaptar tu nutrición.',
+            connected: 'Conectado',
+            pending: 'Sincronización pendiente',
+            disconnected: 'Desconectado',
+            securityNote: 'Datos encriptados y sincronización segura',
         },
         macros: {
             prot: 'Prot',
