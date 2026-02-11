@@ -99,14 +99,14 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   const caloriePercent = Math.min((stats.consumedCalories / stats.targetCalories) * 100, 100);
 
   const getLevelLabel = (level: string) => {
-    switch (level) {
-      case 'seed': return 'Semente';
-      case 'root': return 'Raiz';
-      case 'stem': return 'Caule';
-      case 'flower': return 'Flor';
-      case 'fruit': return 'Fruto';
-      default: return 'Semente';
-    }
+    const levels: Record<string, string> = {
+      seed: t.dashboard.levelSeed,
+      root: t.dashboard.levelRoot,
+      stem: t.dashboard.levelStem,
+      flower: t.dashboard.levelFlower,
+      fruit: t.dashboard.levelFruit,
+    };
+    return levels[level] || t.dashboard.levelSeed;
   };
 
   const generateChartPath = () => {
@@ -133,9 +133,9 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
     if (weeklyScores.length < 2) return { label: '—', isPositive: true };
     const flowDays = weeklyScores.filter(d => d.score >= 75).length;
     const ratio = flowDays / weeklyScores.length;
-    if (ratio >= 0.7) return { label: 'Alta', isPositive: true };
-    if (ratio >= 0.4) return { label: 'Média', isPositive: true };
-    return { label: 'Baixa', isPositive: false };
+    if (ratio >= 0.7) return { label: t.dashboard.consistencyHigh, isPositive: true };
+    if (ratio >= 0.4) return { label: t.dashboard.consistencyMedium, isPositive: true };
+    return { label: t.dashboard.consistencyLow, isPositive: false };
   };
 
   const chartPaths = generateChartPath();
@@ -144,7 +144,7 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   const waterPercent = Math.min((waterIntake / 2500) * 100, 100);
   const proteinPercent = stats.targetMacros.protein > 0 ? Math.min((stats.macros.protein / stats.targetMacros.protein) * 100, 100) : 0;
   const energyPercent = caloriePercent;
-  const displayName = profile?.display_name || user?.email?.split('@')[0] || 'Usuário';
+  const displayName = profile?.display_name || user?.email?.split('@')[0] || t.dashboard.defaultUser;
 
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-nura-bg dark:bg-background-dark font-display text-nura-main dark:text-white animate-fade-in transition-colors duration-300">
@@ -167,7 +167,7 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
           </div>
           <div className="flex flex-col">
             <span className="text-xs text-nura-muted dark:text-slate-400 font-medium tracking-wide uppercase">
-              {gameStats ? `Nível ${getLevelLabel(gameStats.level)}` : t.dashboard.welcomeBack}
+              {gameStats ? `${t.dashboard.levelPrefix} ${getLevelLabel(gameStats.level)}` : t.dashboard.welcomeBack}
             </span>
             <h2 className="text-nura-main dark:text-white text-lg font-bold leading-tight">{displayName}</h2>
           </div>
