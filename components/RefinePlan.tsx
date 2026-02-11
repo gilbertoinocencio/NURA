@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AppView } from '../types';
 import { useLanguage } from '../i18n';
+import { useAuth } from '../contexts/AuthContext';
 
 interface RefinePlanProps {
   onBack: () => void;
@@ -9,9 +10,19 @@ interface RefinePlanProps {
 
 export const RefinePlan: React.FC<RefinePlanProps> = ({ onBack, onNavigate }) => {
   const { t } = useLanguage();
+  const { profile } = useAuth();
   const rp = t.refinePlan;
-  const [goal, setGoal] = useState<'maintain' | 'define' | 'gain'>('define');
-  const [frequency, setFrequency] = useState(5);
+
+  const goalMap: Record<string, 'maintain' | 'define' | 'gain'> = {
+    aesthetic: 'define', health: 'maintain', performance: 'gain',
+  };
+  const [goal, setGoal] = useState<'maintain' | 'define' | 'gain'>(goalMap[profile?.goal] || 'define');
+  const [frequency, setFrequency] = useState(profile?.activity_level === 'intense' ? 6 : profile?.activity_level === 'sedentary' ? 3 : 5);
+
+  const targetCal = profile?.target_calories || 2450;
+  const targetProt = profile?.target_protein || 180;
+  const targetCarbs = profile?.target_carbs || 220;
+  const targetFats = profile?.target_fats || 65;
 
   const goalOptions: { key: 'maintain' | 'define' | 'gain'; label: string }[] = [
     { key: 'maintain', label: rp.maintain },
@@ -92,14 +103,14 @@ export const RefinePlan: React.FC<RefinePlanProps> = ({ onBack, onNavigate }) =>
           </div>
         </div>
 
-        {/* Biometrics */}
+        {/* Biometrics — real data from profile */}
         <div className="px-5 mt-8 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <h3 className="text-sm font-bold uppercase tracking-wider text-nura-muted dark:text-gray-500 mb-4 text-[11px]">{rp.updateBiotype}</h3>
           <div className="flex gap-4">
             <div className="flex-1 bg-white dark:bg-[#1a2630] p-4 rounded-2xl shadow-sm border border-nura-border dark:border-gray-800 flex flex-col justify-between">
               <span className="text-xs font-medium text-nura-muted dark:text-gray-400 mb-1">{rp.currentWeight}</span>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-bold">72.5</span>
+                <span className="text-2xl font-bold">{profile?.weight || '—'}</span>
                 <span className="text-sm text-nura-muted">kg</span>
               </div>
             </div>
@@ -107,14 +118,14 @@ export const RefinePlan: React.FC<RefinePlanProps> = ({ onBack, onNavigate }) =>
               <div className="absolute -right-4 -top-4 size-16 bg-nura-petrol/10 dark:bg-primary/10 rounded-full blur-xl"></div>
               <span className="text-xs font-medium text-nura-muted dark:text-gray-400 mb-1">{rp.bodyFat}</span>
               <div className="flex items-baseline gap-1 relative z-10">
-                <span className="text-2xl font-bold">18</span>
+                <span className="text-2xl font-bold">{profile?.body_fat || '—'}</span>
                 <span className="text-sm text-nura-muted">%</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Plan Preview */}
+        {/* Plan Preview — real target macros */}
         <div className="px-5 mt-8 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <div className="bg-white dark:bg-[#1a2630] rounded-[2rem] p-6 shadow-lg border border-nura-border dark:border-gray-800 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-nura-petrol/5 dark:from-primary/5 to-transparent opacity-50 dark:opacity-20 pointer-events-none"></div>
@@ -129,7 +140,7 @@ export const RefinePlan: React.FC<RefinePlanProps> = ({ onBack, onNavigate }) =>
             <div className="text-center mb-8 relative z-10">
               <span className="block text-[10px] text-nura-muted uppercase font-bold tracking-widest mb-1">{rp.dailyGoal}</span>
               <div className="flex items-center justify-center gap-1">
-                <span className="text-[3.5rem] leading-none font-black tracking-tight">2,450</span>
+                <span className="text-[3.5rem] leading-none font-black tracking-tight">{targetCal.toLocaleString()}</span>
                 <div className="flex flex-col items-start justify-center h-full pt-3">
                   <span className="text-[10px] font-bold text-nura-muted">KCAL</span>
                 </div>
@@ -138,15 +149,15 @@ export const RefinePlan: React.FC<RefinePlanProps> = ({ onBack, onNavigate }) =>
 
             <div className="grid grid-cols-3 gap-4 relative z-10">
               {[
-                { label: rp.protein, value: '180g', pct: 75, color: 'text-nura-petrol dark:text-primary', bg: 'text-nura-petrol dark:text-primary', icon: 'egg_alt' },
-                { label: rp.carbs, value: '220g', pct: 55, color: 'text-amber-600 dark:text-amber-400', bg: 'text-amber-600 dark:text-amber-400', icon: 'rice_bowl' },
-                { label: rp.fats, value: '65g', pct: 30, color: 'text-rose-500 dark:text-rose-400', bg: 'text-rose-500 dark:text-rose-400', icon: 'water_drop' },
+                { label: rp.protein, value: `${targetProt}g`, pct: Math.round((targetProt * 4 / targetCal) * 100), color: 'text-nura-petrol dark:text-primary', icon: 'egg_alt' },
+                { label: rp.carbs, value: `${targetCarbs}g`, pct: Math.round((targetCarbs * 4 / targetCal) * 100), color: 'text-amber-600 dark:text-amber-400', icon: 'rice_bowl' },
+                { label: rp.fats, value: `${targetFats}g`, pct: Math.round((targetFats * 9 / targetCal) * 100), color: 'text-rose-500 dark:text-rose-400', icon: 'water_drop' },
               ].map((macro) => (
                 <div key={macro.label} className="flex flex-col items-center">
                   <div className="relative size-14 mb-2">
                     <svg className="size-full -rotate-90" viewBox="0 0 36 36">
                       <path className="text-nura-border dark:text-gray-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="2.5"></path>
-                      <path className={macro.bg} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray={`${macro.pct}, 100`} strokeLinecap="round" strokeWidth="2.5"></path>
+                      <path className={macro.color} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray={`${macro.pct}, 100`} strokeLinecap="round" strokeWidth="2.5"></path>
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className={`material-symbols-outlined ${macro.color} text-xl`}>{macro.icon}</span>

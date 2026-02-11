@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
 import { useLanguage } from '../i18n';
+import { useAuth } from '../contexts/AuthContext';
+import { GamificationService, GamificationStats } from '../services/gamificationService';
 
 interface PlanRenewalProps {
   onBack: () => void;
@@ -9,8 +11,19 @@ interface PlanRenewalProps {
 
 export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) => {
   const { t } = useLanguage();
+  const { user, profile } = useAuth();
   const pr = t.planRenewal;
-  const [selectedGoal, setSelectedGoal] = useState<string>('aesthetic');
+  const [selectedGoal, setSelectedGoal] = useState<string>(profile?.goal || 'aesthetic');
+  const [gameStats, setGameStats] = useState<GamificationStats | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      GamificationService.updateStats(user.id).then(setGameStats);
+    }
+  }, [user]);
+
+  const consistency = gameStats ? Math.min(Math.round((gameStats.flowDays / Math.max(gameStats.flowDays + 5, 1)) * 100), 99) : 0;
+  const weeksCompleted = gameStats ? Math.floor(gameStats.flowDays / 7) : 0;
 
   const goals = [
     { id: 'aesthetic', label: pr.aesthetic, desc: pr.aestheticDesc, icon: 'spa' },
@@ -44,7 +57,7 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
           <p className="text-nura-muted dark:text-gray-400 text-base font-normal leading-relaxed max-w-[280px] mx-auto">{pr.heroSubtitle}</p>
         </section>
 
-        {/* Consistency Card */}
+        {/* Consistency Card — real data */}
         <section className="px-6 py-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="bg-white dark:bg-[#1a2630] rounded-2xl p-6 shadow-sm border border-nura-border dark:border-gray-800 flex flex-col gap-4 relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-nura-petrol/5 dark:bg-primary/20 rounded-full blur-2xl"></div>
@@ -52,22 +65,24 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
               <div className="flex flex-col gap-1">
                 <span className="text-nura-muted dark:text-gray-400 text-sm font-medium tracking-wide uppercase">{pr.consistency}</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-nura-petrol dark:text-primary text-4xl font-light tracking-tighter">85%</span>
-                  <span className="inline-flex items-center text-nura-main dark:text-gray-300 text-sm font-bold bg-nura-petrol/10 dark:bg-primary/10 px-2 py-0.5 rounded-full">
-                    <span className="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>+5%
-                  </span>
+                  <span className="text-nura-petrol dark:text-primary text-4xl font-light tracking-tighter">{consistency}%</span>
+                  {gameStats && gameStats.currentStreak > 0 && (
+                    <span className="inline-flex items-center text-nura-main dark:text-gray-300 text-sm font-bold bg-nura-petrol/10 dark:bg-primary/10 px-2 py-0.5 rounded-full">
+                      <span className="material-symbols-outlined text-[14px] mr-0.5">local_fire_department</span>{gameStats.currentStreak}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="w-12 h-12 relative flex items-center justify-center">
                 <svg className="transform -rotate-90 w-full h-full" viewBox="0 0 36 36">
                   <path className="text-nura-border dark:text-gray-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4"></path>
-                  <path className="text-nura-petrol dark:text-primary" strokeDasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"></path>
+                  <path className="text-nura-petrol dark:text-primary" strokeDasharray={`${consistency}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"></path>
                 </svg>
               </div>
             </div>
             <div className="h-px w-full bg-nura-border dark:bg-gray-800"></div>
             <div className="flex justify-between items-center text-sm relative z-10">
-              <span className="font-medium">12 {pr.weeksCompleted}</span>
+              <span className="font-medium">{weeksCompleted} {pr.weeksCompleted}</span>
               <div className="flex -space-x-2">
                 <div className="w-6 h-6 rounded-full bg-nura-petrol dark:bg-primary flex items-center justify-center border-2 border-white dark:border-[#1a2630] text-white shadow-sm z-20">
                   <span className="material-symbols-outlined text-[12px]">star</span>
