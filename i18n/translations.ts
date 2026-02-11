@@ -160,12 +160,45 @@ export interface Translations {
         noData: string;
     };
 
+    // Quarterly Analysis
+    quarterlyAnalysis: {
+        title: string;
+        daysOfFlow: string;
+        bodyEvolution: string;
+        viewPhotos: string;
+        consistencyPercent: string;
+        macrosHit: string;
+        evolutionBadge: string;
+        unlockedOn: string;
+        aiInsights: string;
+        newPlanCta: string;
+    };
+
     // Social
     social: {
         shareProgress: string;
         download: string;
         copyLink: string;
         close: string;
+        community: string;
+        myFlow: string;
+        feedTitle: string;
+        noPosts: string;
+        postNow: string;
+    };
+
+    // Hydration
+    hydration: {
+        title: string;
+        trackFlow: string;
+        shareGoal: string;
+        todayGoal: string;
+        viewOptions: string;
+        templateStyle: string;
+        viewAll: string;
+        goal: string;
+        quote: string;
+        shareGoalCta: string;
     };
 
     // Macros
@@ -328,11 +361,40 @@ export const translations: Record<Language, Translations> = {
             shareProgress: 'Share Progress',
             noData: 'No data yet',
         },
+        quarterlyAnalysis: {
+            title: 'Quarterly Analysis',
+            daysOfFlow: 'Days of Flow',
+            bodyEvolution: 'Body Evolution',
+            viewPhotos: 'View Photos',
+            consistencyPercent: 'Consistency %',
+            macrosHit: 'Macros Hit',
+            evolutionBadge: 'Evolution Badge',
+            unlockedOn: 'Unlocked on',
+            aiInsights: 'AI Insights',
+            newPlanCta: 'New Plan for Next Quarter',
+        },
         social: {
             shareProgress: 'Share Progress',
             download: 'Download',
             copyLink: 'Copy Link',
             close: 'Close',
+            community: 'Community',
+            myFlow: 'My Flow',
+            feedTitle: 'Flow Feed',
+            noPosts: 'No posts yet. Be the first to share your flow!',
+            postNow: 'Post Now',
+        },
+        hydration: {
+            title: 'Social Hydration',
+            trackFlow: 'Track the Flow',
+            shareGoal: 'Share your daily water goal',
+            todayGoal: "Today's Goal",
+            viewOptions: 'View Options',
+            templateStyle: 'Template Style',
+            viewAll: 'View all',
+            goal: 'Goal',
+            quote: 'Quote',
+            shareGoalCta: 'Share Goal',
         },
         macros: {
             prot: 'Prot',
@@ -490,11 +552,40 @@ export const translations: Record<Language, Translations> = {
             shareProgress: 'Compartilhar Progresso',
             noData: 'Sem dados ainda',
         },
+        quarterlyAnalysis: {
+            title: 'Análise Trimestral',
+            daysOfFlow: 'Dias de Flow',
+            bodyEvolution: 'Evolução Corporal',
+            viewPhotos: 'Ver Fotos',
+            consistencyPercent: '% de Consistência',
+            macrosHit: 'Macros Atingidos',
+            evolutionBadge: 'Badge de Evolução',
+            unlockedOn: 'Desbloqueado em',
+            aiInsights: 'Insights da IA',
+            newPlanCta: 'Novo Plano para o Próximo Trimestre',
+        },
         social: {
             shareProgress: 'Compartilhar Progresso',
             download: 'Baixar',
             copyLink: 'Copiar Link',
             close: 'Fechar',
+            community: 'Comunidade',
+            myFlow: 'Meu Flow',
+            feedTitle: 'Feed do Flow',
+            noPosts: 'Nenhum post ainda. Seja o primeiro a compartilhar seu flow!',
+            postNow: 'Postar Agora',
+        },
+        hydration: {
+            title: 'Hidratação Social',
+            trackFlow: 'Acompanhe o Fluxo',
+            shareGoal: 'Compartilhe sua meta diária de água',
+            todayGoal: 'Meta de Hoje',
+            viewOptions: 'Opções de visualização',
+            templateStyle: 'Estilo do Template',
+            viewAll: 'Ver todos',
+            goal: 'Meta',
+            quote: 'Frase',
+            shareGoalCta: 'Compartilhar Meta',
         },
         macros: {
             prot: 'Prot',
@@ -652,11 +743,40 @@ export const translations: Record<Language, Translations> = {
             shareProgress: 'Compartir Progreso',
             noData: 'Sin datos aún',
         },
+        quarterlyAnalysis: {
+            title: 'Análisis Trimestral',
+            daysOfFlow: 'Días de Flow',
+            bodyEvolution: 'Evolución Corporal',
+            viewPhotos: 'Ver Fotos',
+            consistencyPercent: '% de Consistencia',
+            macrosHit: 'Macros Alcanzados',
+            evolutionBadge: 'Insignia de Evolución',
+            unlockedOn: 'Desbloqueado el',
+            aiInsights: 'Insights de IA',
+            newPlanCta: 'Nuevo Plan para el Próximo Trimestre',
+        },
         social: {
             shareProgress: 'Compartir Progreso',
             download: 'Descargar',
             copyLink: 'Copiar Enlace',
             close: 'Cerrar',
+            community: 'Comunidad',
+            myFlow: 'Mi Flow',
+            feedTitle: 'Feed del Flow',
+            noPosts: 'Aún no hay posts. ¡Sé el primero en compartir tu flow!',
+            postNow: 'Publicar Ahora',
+        },
+        hydration: {
+            title: 'Hidratación Social',
+            trackFlow: 'Sigue el Flujo',
+            shareGoal: 'Comparte tu meta diaria de agua',
+            todayGoal: 'Meta de Hoy',
+            viewOptions: 'Opciones de vista',
+            templateStyle: 'Estilo de Plantilla',
+            viewAll: 'Ver todo',
+            goal: 'Meta',
+            quote: 'Frase',
+            shareGoalCta: 'Compartir Meta',
         },
         macros: {
             prot: 'Prot',

@@ -3,6 +3,7 @@ import { AppView } from '../types';
 import { USER_AVATAR } from '../constants';
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../i18n';
 
 interface SocialFeedProps {
   onNavigate: (view: AppView) => void;
@@ -23,6 +24,7 @@ interface Post {
 
 export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, activeView, onBack }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,10 +44,6 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-
-      // Mock checking if user liked (requires join or separate query, simplified here)
-      // ideally: .select('*, likes!left(user_id)')
-
       setPosts(data as any || []);
     } catch (e) {
       console.error("Error loading posts", e);
@@ -55,24 +53,22 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
   };
 
   const handleLike = async (postId: string) => {
-    // Optimistic update
     setPosts(prev => prev.map(p =>
       p.id === postId ? { ...p, likes_count: p.likes_count + 1, user_has_liked: true } : p
     ));
 
     if (!user) return;
 
-    // Save to DB
     try {
       const { error } = await supabase.from('likes').insert({ post_id: postId, user_id: user.id });
-      if (error && error.code !== '23505') throw error; // Ignore duplicate likes
+      if (error && error.code !== '23505') throw error;
     } catch (e) {
       console.error("Error liking post:", e);
     }
   };
 
   return (
-    <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-24 bg-nura-bg dark:bg-background-dark font-jakarta animate-fade-in transition-colors duration-300">
+    <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-24 bg-nura-bg dark:bg-background-dark font-display animate-fade-in transition-colors duration-300">
 
       {/* Header */}
       <header className="sticky top-0 z-50 bg-nura-bg/95 dark:bg-background-dark/95 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-nura-border dark:border-white/5 transition-colors">
@@ -83,10 +79,9 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
           >
             <span className="material-symbols-outlined text-[24px]">arrow_back</span>
           </button>
-          <h1 className="text-nura-main dark:text-white text-xl font-bold tracking-tight">Community</h1>
+          <h1 className="text-nura-main dark:text-white text-xl font-bold tracking-tight">{t.social.community}</h1>
         </div>
         <div className="flex items-center gap-2">
-          {/* Replaced Menu with Logo Icon to avoid nav confusion */}
           <div className="size-8 rounded-full bg-nura-petrol/10 dark:bg-primary/10 flex items-center justify-center text-nura-petrol dark:text-primary">
             <span className="material-symbols-outlined text-lg">spa</span>
           </div>
@@ -98,9 +93,8 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
         </div>
       </header>
 
-      {/* StoryCarousel (Hero Progress) */}
+      {/* StoryCarousel */}
       <div className="flex w-full overflow-x-auto no-scrollbar px-4 py-4 space-x-4">
-        {/* Add Flow Button */}
         <div className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group">
           <div
             onClick={onFabClick}
@@ -115,10 +109,10 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
               <span className="material-symbols-outlined text-[20px]">add</span>
             </div>
           </div>
-          <p className="text-nura-main dark:text-white text-xs font-semibold truncate">Meu Flow</p>
+          <p className="text-nura-main dark:text-white text-xs font-semibold truncate">{t.social.myFlow}</p>
         </div>
 
-        {/* Mock Stories for aesthetics - could be real later */}
+        {/* Placeholder stories */}
         {[1, 2, 3].map(i => (
           <div key={i} className="flex flex-col justify-start gap-2 min-w-[80px] text-center cursor-pointer group opacity-50">
             <div className="w-full relative aspect-[3/4] rounded-2xl bg-gray-200 dark:bg-white/10 animate-pulse"></div>
@@ -128,14 +122,14 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onNavigate, onFabClick, 
 
       {/* Community Feed Grid */}
       <div className="px-4 py-2">
-        <h2 className="text-nura-main dark:text-white text-xl font-bold leading-tight mb-3">Feed do Flow</h2>
+        <h2 className="text-nura-main dark:text-white text-xl font-bold leading-tight mb-3">{t.social.feedTitle}</h2>
 
         {loading ? (
-          <div className="flex justify-center py-10"><div className="animate-spin h-8 w-8 border-2 border-primary rounded-full border-t-transparent"></div></div>
+          <div className="flex justify-center py-10"><div className="animate-spin h-8 w-8 border-2 border-nura-petrol dark:border-primary rounded-full border-t-transparent"></div></div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-10 text-gray-400">
-            <p>Nenhum post ainda. Seja o primeiro a compartilhar seu flow!</p>
-            <button onClick={onFabClick} className="mt-4 text-primary font-bold">Postar Agora</button>
+          <div className="text-center py-10 text-nura-muted dark:text-gray-400">
+            <p>{t.social.noPosts}</p>
+            <button onClick={onFabClick} className="mt-4 text-nura-petrol dark:text-primary font-bold">{t.social.postNow}</button>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
