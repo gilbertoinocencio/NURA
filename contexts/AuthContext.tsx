@@ -29,6 +29,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser(session?.user ?? null);
             if (session?.user) fetchProfile(session.user.id);
             setLoading(false);
+        }).catch((err) => {
+            console.error('Error getting session:', err);
+            setLoading(false);
         });
 
         // Listen for auth changes

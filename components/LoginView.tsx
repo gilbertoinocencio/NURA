@@ -4,7 +4,7 @@ import { useLanguage } from '../i18n';
 
 export const LoginView: React.FC = () => {
     const { signInWithGoogle, signInWithEmail, signUpWithEmail, loading } = useAuth();
-    const { t } = useLanguage();
+    const { t, language, setLanguage } = useLanguage();
     const a = t.auth;
     const [error, setError] = useState<string | null>(null);
     const [email, setEmail] = useState('');
@@ -52,7 +52,26 @@ export const LoginView: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-nura-bg dark:bg-background-dark font-display">
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-nura-bg dark:bg-background-dark font-display relative">
+            <div className="absolute top-6 right-6 flex gap-2">
+                {[
+                    { code: 'en', label: 'EN' },
+                    { code: 'pt', label: 'PT' },
+                    { code: 'es', label: 'ES' }
+                ].map((lang) => (
+                    <button
+                        key={lang.code}
+                        onClick={() => setLanguage(lang.code as any)}
+                        className={`text-xs font-bold px-2 py-1 rounded-lg transition-colors ${language === lang.code
+                            ? 'bg-nura-petrol dark:bg-primary text-white'
+                            : 'text-nura-muted dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/10'
+                            }`}
+                    >
+                        {lang.label}
+                    </button>
+                ))}
+            </div>
+
             <div className="w-full max-w-sm flex flex-col items-center gap-8 animate-fade-in-up">
                 {/* Logo */}
                 <div className="flex flex-col items-center gap-2">
