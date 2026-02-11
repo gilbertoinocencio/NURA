@@ -261,6 +261,8 @@ export interface Translations {
         intense: string;
         calculateMacros: string;
         saveError: string;
+        welcome: string;
+        setupProfile: string;
     };
 
     // Integrations
@@ -605,6 +607,8 @@ export const translations: Record<Language, Translations> = {
             intense: 'Intense',
             calculateMacros: 'Calculate Macros',
             saveError: 'Error saving profile. Please try again.',
+            welcome: 'Welcome to Nura',
+            setupProfile: 'Let\'s set up your profile to customize your experience.',
         },
         integrations: {
             title: 'Integrations',
@@ -934,6 +938,8 @@ export const translations: Record<Language, Translations> = {
             intense: 'Intenso',
             calculateMacros: 'Calcular Macros',
             saveError: 'Erro ao salvar perfil. Tente novamente.',
+            welcome: 'Bem-vindo ao Nura',
+            setupProfile: 'Vamos configurar seu perfil para personalizar sua experiência.',
         },
         integrations: {
             title: 'Integrações',
@@ -1263,6 +1269,8 @@ export const translations: Record<Language, Translations> = {
             intense: 'Intenso',
             calculateMacros: 'Calcular Macros',
             saveError: 'Error al guardar perfil. Inténtalo de nuevo.',
+            welcome: 'Bienvenido a Nura',
+            setupProfile: 'Vamos a configurar tu perfil para personalizar tu experiencia.',
         },
         integrations: {
             title: 'Integraciones',

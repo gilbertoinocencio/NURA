@@ -6,9 +6,10 @@ import { useLanguage } from '../i18n';
 interface ProfileConfigProps {
   onBack: () => void;
   onFinish: () => void;
+  isOnboarding?: boolean;
 }
 
-export const ProfileConfig: React.FC<ProfileConfigProps> = ({ onBack, onFinish }) => {
+export const ProfileConfig: React.FC<ProfileConfigProps> = ({ onBack, onFinish, isOnboarding = false }) => {
   const { profile, updateProfile } = useAuth();
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
@@ -98,12 +99,15 @@ export const ProfileConfig: React.FC<ProfileConfigProps> = ({ onBack, onFinish }
 
       {/* Header */}
       <header className="flex items-center justify-between px-6 pt-8 pb-4 z-10 relative">
-        <button
-          onClick={onBack}
-          className="flex items-center justify-center size-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-        >
-          <span className="material-symbols-outlined">arrow_back</span>
-        </button>
+        {!isOnboarding && (
+          <button
+            onClick={onBack}
+            className="flex items-center justify-center size-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+        )}
+        {isOnboarding && <div className="size-10" />}
         <div className="flex flex-col items-center">
           <span className="text-xs font-bold tracking-[0.2em] text-nura-petrol dark:text-primary uppercase">Nura</span>
         </div>
@@ -116,8 +120,12 @@ export const ProfileConfig: React.FC<ProfileConfigProps> = ({ onBack, onFinish }
 
         {/* Title */}
         <div className="mt-4 mb-10 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <h1 className="text-3xl font-bold tracking-tight text-nura-main dark:text-white mb-2">{pc.title}</h1>
-          <p className="text-sm text-nura-muted dark:text-gray-400 font-medium leading-relaxed">{pc.subtitle}</p>
+          <h1 className="text-3xl font-bold tracking-tight text-nura-main dark:text-white mb-2">
+            {isOnboarding ? pc.welcome : pc.title}
+          </h1>
+          <p className="text-sm text-nura-muted dark:text-gray-400 font-medium leading-relaxed">
+            {isOnboarding ? pc.setupProfile : pc.subtitle}
+          </p>
         </div>
 
         <form className="flex flex-col gap-10" onSubmit={(e) => e.preventDefault()}>

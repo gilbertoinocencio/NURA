@@ -27,7 +27,7 @@ import { MealService } from './services/mealService';
 import { StatsService } from './services/statsService';
 
 const App: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [view, setView] = useState<AppView>(AppView.HOME);
   const [stats, setStats] = useState<DailyStats>(INITIAL_STATS);
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -93,6 +93,17 @@ const App: React.FC = () => {
 
   if (!user) {
     return <LoginView />;
+  }
+
+  // Onboarding Flow: User exists but hasn't set up profile
+  if (!profile?.target_calories) {
+    return (
+      <ProfileConfig
+        onBack={() => { }}
+        onFinish={() => window.location.reload()}
+        isOnboarding={true}
+      />
+    );
   }
 
   return (
