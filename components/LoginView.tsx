@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../i18n';
 
 export const LoginView: React.FC = () => {
     const { signInWithGoogle, signInWithEmail, signUpWithEmail, loading } = useAuth();
+    const { t } = useLanguage();
+    const a = t.auth;
     const [error, setError] = useState<string | null>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -14,14 +17,14 @@ export const LoginView: React.FC = () => {
             setError(null);
             await signInWithGoogle();
         } catch (err: any) {
-            setError(err.message || 'Error signing in with Google');
+            setError(err.message || a.authError);
         }
     };
 
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email || !password) {
-            setError("Preencha email e senha");
+            setError(a.fillFields);
             return;
         }
         setAuthLoading(true);
@@ -29,13 +32,12 @@ export const LoginView: React.FC = () => {
         try {
             if (isSignUp) {
                 await signUpWithEmail(email, password);
-                // Supabase might require email confirmation, but usually logs in if disabled
-                setError("Conta criada! Verifique seu email ou tente entrar.");
+                setError(a.accountCreated);
             } else {
                 await signInWithEmail(email, password);
             }
         } catch (err: any) {
-            setError(err.message || 'Erro de autenticação');
+            setError(err.message || a.authError);
         } finally {
             setAuthLoading(false);
         }
@@ -58,12 +60,11 @@ export const LoginView: React.FC = () => {
                         <span className="material-symbols-outlined text-white text-4xl">water_drop</span>
                     </div>
                     <h1 className="text-4xl font-bold text-nura-petrol dark:text-white tracking-tighter">NURA</h1>
-                    <p className="text-nura-muted dark:text-slate-400 font-medium">Nutrição para o seu Flow</p>
+                    <p className="text-nura-muted dark:text-slate-400 font-medium">{a.subtitle}</p>
                 </div>
 
                 {/* Action */}
                 <div className="w-full flex flex-col gap-4">
-                    {/* Email Form */}
                     <form onSubmit={handleEmailAuth} className="w-full flex flex-col gap-3">
                         <input
                             type="email"
@@ -74,7 +75,7 @@ export const LoginView: React.FC = () => {
                         />
                         <input
                             type="password"
-                            placeholder="Senha"
+                            placeholder={a.password}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full h-12 px-4 rounded-xl border border-nura-border dark:border-white/10 bg-white dark:bg-black/20 text-nura-main dark:text-white placeholder-nura-muted focus:outline-none focus:ring-2 focus:ring-nura-petrol/20 transition-all"
@@ -84,20 +85,20 @@ export const LoginView: React.FC = () => {
                             disabled={authLoading}
                             className="w-full h-12 bg-nura-petrol dark:bg-primary text-white rounded-xl font-semibold shadow-lg shadow-nura-petrol/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {authLoading ? 'Processando...' : (isSignUp ? 'Criar Conta' : 'Entrar')}
+                            {authLoading ? a.processing : (isSignUp ? a.signUp : a.signIn)}
                         </button>
                     </form>
 
                     <div className="w-full flex items-center justify-between text-sm">
                         <span className="text-nura-muted">
-                            {isSignUp ? 'Já tem conta?' : 'Não tem conta?'}
+                            {isSignUp ? a.hasAccount : a.noAccount}
                         </span>
                         <button
                             type="button"
                             onClick={() => setIsSignUp(!isSignUp)}
                             className="text-nura-petrol dark:text-primary font-semibold hover:underline"
                         >
-                            {isSignUp ? 'Fazer Login' : 'Criar nova conta'}
+                            {isSignUp ? a.doLogin : a.createAccount}
                         </button>
                     </div>
 
@@ -106,7 +107,7 @@ export const LoginView: React.FC = () => {
                             <div className="w-full border-t border-gray-200 dark:border-white/10"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-nura-bg dark:bg-background-dark text-nura-muted">Ou continue com</span>
+                            <span className="px-2 bg-nura-bg dark:bg-background-dark text-nura-muted">{a.orContinueWith}</span>
                         </div>
                     </div>
 
@@ -115,7 +116,7 @@ export const LoginView: React.FC = () => {
                         className="w-full h-14 bg-white dark:bg-surface-dark border border-nura-border dark:border-white/10 rounded-xl flex items-center justify-center gap-3 shadow-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-nura-main dark:text-white font-semibold relative overflow-hidden group"
                     >
                         <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
-                        <span>Continuar com Google</span>
+                        <span>{a.continueGoogle}</span>
                     </button>
 
                     {error && (
@@ -126,9 +127,9 @@ export const LoginView: React.FC = () => {
                 </div>
 
                 <p className="text-xs text-center text-nura-muted dark:text-slate-500 max-w-xs leading-relaxed">
-                    Ao continuar, você concorda com nossos Termos de Serviço e Política de Privacidade.
+                    {a.terms}
                     <br /><br />
-                    Nura usa IA para otimizar sua nutrição.
+                    {a.aiNote}
                 </p>
             </div>
         </div>

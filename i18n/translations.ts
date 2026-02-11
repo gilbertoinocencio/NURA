@@ -323,6 +323,26 @@ export interface Translations {
         fat: string;
     };
 
+    // Auth
+    auth: {
+        subtitle: string;
+        password: string;
+        processing: string;
+        signIn: string;
+        signUp: string;
+        fillFields: string;
+        accountCreated: string;
+        authError: string;
+        hasAccount: string;
+        noAccount: string;
+        doLogin: string;
+        createAccount: string;
+        orContinueWith: string;
+        continueGoogle: string;
+        terms: string;
+        aiNote: string;
+    };
+
     // Macros
     macros: {
         prot: string;
@@ -574,6 +594,24 @@ export const translations: Record<Language, Translations> = {
             pending: 'Sync pending',
             disconnected: 'Disconnected',
             securityNote: 'Encrypted data and secure sync',
+        },
+        auth: {
+            subtitle: 'Nutrition for your Flow',
+            password: 'Password',
+            processing: 'Processing...',
+            signIn: 'Sign In',
+            signUp: 'Create Account',
+            fillFields: 'Please fill in email and password',
+            accountCreated: 'Account created! Check your email or try signing in.',
+            authError: 'Authentication error',
+            hasAccount: 'Already have an account?',
+            noAccount: 'Don\'t have an account?',
+            doLogin: 'Sign In',
+            createAccount: 'Create new account',
+            orContinueWith: 'Or continue with',
+            continueGoogle: 'Continue with Google',
+            terms: 'By continuing, you agree to our Terms of Service and Privacy Policy.',
+            aiNote: 'Nura uses AI to optimize your nutrition.',
         },
         planRenewal: {
             header: 'Plan Renewal',
@@ -876,6 +914,24 @@ export const translations: Record<Language, Translations> = {
             disconnected: 'Desconectado',
             securityNote: 'Dados criptografados e sincronização segura',
         },
+        auth: {
+            subtitle: 'Nutri\u00e7\u00e3o para o seu Flow',
+            password: 'Senha',
+            processing: 'Processando...',
+            signIn: 'Entrar',
+            signUp: 'Criar Conta',
+            fillFields: 'Preencha email e senha',
+            accountCreated: 'Conta criada! Verifique seu email ou tente entrar.',
+            authError: 'Erro de autentica\u00e7\u00e3o',
+            hasAccount: 'J\u00e1 tem conta?',
+            noAccount: 'N\u00e3o tem conta?',
+            doLogin: 'Fazer Login',
+            createAccount: 'Criar nova conta',
+            orContinueWith: 'Ou continue com',
+            continueGoogle: 'Continuar com Google',
+            terms: 'Ao continuar, voc\u00ea concorda com nossos Termos de Servi\u00e7o e Pol\u00edtica de Privacidade.',
+            aiNote: 'Nura usa IA para otimizar sua nutri\u00e7\u00e3o.',
+        },
         planRenewal: {
             header: 'Renova\u00e7\u00e3o de Plano',
             heroTitle: 'Um novo ciclo',
@@ -1176,6 +1232,24 @@ export const translations: Record<Language, Translations> = {
             pending: 'Sincronización pendiente',
             disconnected: 'Desconectado',
             securityNote: 'Datos encriptados y sincronización segura',
+        },
+        auth: {
+            subtitle: 'Nutrici\u00f3n para tu Flow',
+            password: 'Contrase\u00f1a',
+            processing: 'Procesando...',
+            signIn: 'Iniciar Sesi\u00f3n',
+            signUp: 'Crear Cuenta',
+            fillFields: 'Completa email y contrase\u00f1a',
+            accountCreated: '\u00a1Cuenta creada! Verifica tu email o intenta iniciar sesi\u00f3n.',
+            authError: 'Error de autenticaci\u00f3n',
+            hasAccount: '\u00bfYa tienes cuenta?',
+            noAccount: '\u00bfNo tienes cuenta?',
+            doLogin: 'Iniciar Sesi\u00f3n',
+            createAccount: 'Crear nueva cuenta',
+            orContinueWith: 'O contin\u00faa con',
+            continueGoogle: 'Continuar con Google',
+            terms: 'Al continuar, aceptas nuestros T\u00e9rminos de Servicio y Pol\u00edtica de Privacidad.',
+            aiNote: 'Nura usa IA para optimizar tu nutrici\u00f3n.',
         },
         planRenewal: {
             header: 'Renovaci\u00f3n de Plan',
