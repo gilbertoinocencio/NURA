@@ -201,6 +201,30 @@ export interface Translations {
         shareGoalCta: string;
     };
 
+    // Journal
+    journal: {
+        title: string;
+        myFlow: string;
+        flowStatus: string;
+        inProgress: string;
+        keepLogging: string;
+        energyOfDay: string;
+        low: string;
+        medium: string;
+        good: string;
+        flow: string;
+        visualRecord: string;
+        captureFlow: string;
+        captureFlowSub: string;
+        notesOfDay: string;
+        notesPlaceholder: string;
+        shareToCommunity: string;
+        saving: string;
+        save: string;
+        saveError: string;
+        saveJournal: string;
+    };
+
     // Macros
     macros: {
         prot: string;
@@ -396,6 +420,28 @@ export const translations: Record<Language, Translations> = {
             quote: 'Quote',
             shareGoalCta: 'Share Goal',
         },
+        journal: {
+            title: 'NURA Journal',
+            myFlow: 'My Flow',
+            flowStatus: 'Flow Status',
+            inProgress: 'In Progress',
+            keepLogging: 'Keep logging to calculate.',
+            energyOfDay: 'Energy of the Day',
+            low: 'Low',
+            medium: 'Medium',
+            good: 'Good',
+            flow: 'Flow',
+            visualRecord: 'Visual Record',
+            captureFlow: 'Capture your Flow',
+            captureFlowSub: 'Record the aesthetics of your nutrition today.',
+            notesOfDay: 'Notes of the Day',
+            notesPlaceholder: 'How did you fuel your flow today? Write briefly...',
+            shareToCommunity: 'Share to Community Feed',
+            saving: 'Saving...',
+            save: 'Save',
+            saveError: 'Error saving journal',
+            saveJournal: 'Save Journal',
+        },
         macros: {
             prot: 'Prot',
             carb: 'Carb',
@@ -587,6 +633,28 @@ export const translations: Record<Language, Translations> = {
             quote: 'Frase',
             shareGoalCta: 'Compartilhar Meta',
         },
+        journal: {
+            title: 'Diário NURA',
+            myFlow: 'Meu Flow',
+            flowStatus: 'Flow Status',
+            inProgress: 'Em Progresso',
+            keepLogging: 'Continue registrando para calcular.',
+            energyOfDay: 'Energia do Dia',
+            low: 'Baixa',
+            medium: 'Média',
+            good: 'Boa',
+            flow: 'Flow',
+            visualRecord: 'Registro Visual',
+            captureFlow: 'Capture seu Flow',
+            captureFlowSub: 'Registre a estética da sua nutrição de hoje.',
+            notesOfDay: 'Notas do Dia',
+            notesPlaceholder: 'Como você alimentou seu flow hoje? Escreva brevemente...',
+            shareToCommunity: 'Compartilhar no Feed da Comunidade',
+            saving: 'Salvando...',
+            save: 'Salvar',
+            saveError: 'Erro ao salvar diário',
+            saveJournal: 'Salvar Diário',
+        },
         macros: {
             prot: 'Prot',
             carb: 'Carb',
@@ -777,6 +845,28 @@ export const translations: Record<Language, Translations> = {
             goal: 'Meta',
             quote: 'Frase',
             shareGoalCta: 'Compartir Meta',
+        },
+        journal: {
+            title: 'Diario NURA',
+            myFlow: 'Mi Flow',
+            flowStatus: 'Estado del Flow',
+            inProgress: 'En Progreso',
+            keepLogging: 'Sigue registrando para calcular.',
+            energyOfDay: 'Energía del Día',
+            low: 'Baja',
+            medium: 'Media',
+            good: 'Buena',
+            flow: 'Flow',
+            visualRecord: 'Registro Visual',
+            captureFlow: 'Captura tu Flow',
+            captureFlowSub: 'Registra la estética de tu nutrición hoy.',
+            notesOfDay: 'Notas del Día',
+            notesPlaceholder: '¿Cómo alimentaste tu flow hoy? Escribe brevemente...',
+            shareToCommunity: 'Compartir en el Feed de la Comunidad',
+            saving: 'Guardando...',
+            save: 'Guardar',
+            saveError: 'Error al guardar diario',
+            saveJournal: 'Guardar Diario',
         },
         macros: {
             prot: 'Prot',
