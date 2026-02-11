@@ -24,7 +24,9 @@ import { INITIAL_STATS } from './constants';
 import { useAuth } from './contexts/AuthContext';
 import { LoginView } from './components/LoginView';
 import { MealService } from './services/mealService';
+import { MealService } from './services/mealService';
 import { StatsService } from './services/statsService';
+import { NotificationService } from './services/notificationService';
 
 const App: React.FC = () => {
   const { user, profile, loading } = useAuth();
@@ -47,6 +49,14 @@ const App: React.FC = () => {
   const toggleTheme = () => {
     setDarkMode(prev => !prev);
   };
+
+  // Notification Scheduler
+  useEffect(() => {
+    const interval = setInterval(() => {
+      NotificationService.checkReminders();
+    }, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
 
   // Fetch Stats on Load
   useEffect(() => {
