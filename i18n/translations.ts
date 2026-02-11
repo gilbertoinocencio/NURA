@@ -264,6 +264,65 @@ export interface Translations {
         securityNote: string;
     };
 
+    // Plan Renewal
+    planRenewal: {
+        header: string;
+        heroTitle: string;
+        heroAccent: string;
+        heroSubtitle: string;
+        consistency: string;
+        weeksCompleted: string;
+        nextChapter: string;
+        aesthetic: string;
+        aestheticDesc: string;
+        health: string;
+        healthDesc: string;
+        performance: string;
+        performanceDesc: string;
+        generatePlan: string;
+    };
+
+    // Refine Plan
+    refinePlan: {
+        title: string;
+        adjustFlow: string;
+        aiAnalysis: string;
+        currentGoal: string;
+        maintain: string;
+        define: string;
+        gain: string;
+        workoutRoutine: string;
+        weeklyFrequency: string;
+        preferredTime: string;
+        preferredTimeDesc: string;
+        updateBiotype: string;
+        currentWeight: string;
+        bodyFat: string;
+        planPreview: string;
+        aiOptimized: string;
+        dailyGoal: string;
+        protein: string;
+        carbs: string;
+        fats: string;
+        generatePlan90: string;
+    };
+
+    // Flow Adaptation
+    flowAdaptation: {
+        title: string;
+        syncComplete: string;
+        activityDetected: string;
+        workoutType: string;
+        duration: string;
+        burned: string;
+        details: string;
+        kcalAdded: string;
+        addedMessage: string;
+        carbs: string;
+        protein: string;
+        fat: string;
+    };
+
     // Macros
     macros: {
         prot: string;
@@ -516,6 +575,59 @@ export const translations: Record<Language, Translations> = {
             disconnected: 'Disconnected',
             securityNote: 'Encrypted data and secure sync',
         },
+        planRenewal: {
+            header: 'Plan Renewal',
+            heroTitle: 'A new cycle',
+            heroAccent: 'starts now.',
+            heroSubtitle: 'Your consistency in the last quarter was inspiring. Let\'s recalibrate your Flow.',
+            consistency: 'Consistency',
+            weeksCompleted: 'Weeks Completed',
+            nextChapter: 'What\'s the focus for the next chapter?',
+            aesthetic: 'Aesthetic',
+            aestheticDesc: 'Sculpt and define',
+            health: 'Health',
+            healthDesc: 'Longevity and balance',
+            performance: 'Performance',
+            performanceDesc: 'Power and endurance',
+            generatePlan: 'Generate Personalized Plan',
+        },
+        refinePlan: {
+            title: 'Refining the Flow',
+            adjustFlow: 'Adjust your Flow',
+            aiAnalysis: 'Our AI analyzed your last 90 days. The algorithm suggests a protein increase for the next cycle. Adjust to your preference.',
+            currentGoal: 'Current Goal',
+            maintain: 'Maintain',
+            define: 'Define',
+            gain: 'Gain',
+            workoutRoutine: 'Workout Routine',
+            weeklyFrequency: 'Weekly Frequency',
+            preferredTime: 'Preferred Time',
+            preferredTimeDesc: 'Adjusts carb timing',
+            updateBiotype: 'Update Biotype',
+            currentWeight: 'Current Weight',
+            bodyFat: 'Body Fat',
+            planPreview: 'Plan Preview',
+            aiOptimized: 'AI OPTIMIZED',
+            dailyGoal: 'Daily Goal',
+            protein: 'Protein',
+            carbs: 'Carbs',
+            fats: 'Fat',
+            generatePlan90: 'Generate Plan (90 Days)',
+        },
+        flowAdaptation: {
+            title: 'Flow Adaptation',
+            syncComplete: 'Sync Complete',
+            activityDetected: 'Activity Detected',
+            workoutType: 'Workout Type',
+            duration: 'Duration',
+            burned: 'burned',
+            details: 'Details',
+            kcalAdded: 'Kcal Added',
+            addedMessage: 'We\'ve added <bold>+{kcal}kcal</bold> to your flow today based on your activity intensity.',
+            carbs: 'Carbs',
+            protein: 'Protein',
+            fat: 'Fat',
+        },
         macros: {
             prot: 'Prot',
             carb: 'Carb',
@@ -764,6 +876,59 @@ export const translations: Record<Language, Translations> = {
             disconnected: 'Desconectado',
             securityNote: 'Dados criptografados e sincronização segura',
         },
+        planRenewal: {
+            header: 'Renova\u00e7\u00e3o de Plano',
+            heroTitle: 'Um novo ciclo',
+            heroAccent: 'come\u00e7a agora.',
+            heroSubtitle: 'Sua consist\u00eancia no \u00faltimo trimestre foi inspiradora. Vamos recalibrar seu Flow.',
+            consistency: 'Consist\u00eancia',
+            weeksCompleted: 'Semanas Conclu\u00eddas',
+            nextChapter: 'Qual \u00e9 o foco para o pr\u00f3ximo cap\u00edtulo?',
+            aesthetic: 'Est\u00e9tica',
+            aestheticDesc: 'Esculpir e definir',
+            health: 'Sa\u00fade',
+            healthDesc: 'Longevidade e equil\u00edbrio',
+            performance: 'Performance',
+            performanceDesc: 'Pot\u00eancia e resist\u00eancia',
+            generatePlan: 'Gerar Plano Personalizado',
+        },
+        refinePlan: {
+            title: 'Refinando o Flow',
+            adjustFlow: 'Ajuste seu Flow',
+            aiAnalysis: 'Nossa IA analisou seus \u00faltimos 90 dias. O algoritmo sugere um aumento de prote\u00edna para o pr\u00f3ximo ciclo. Ajuste conforme sua prefer\u00eancia.',
+            currentGoal: 'Objetivo Atual',
+            maintain: 'Manter',
+            define: 'Definir',
+            gain: 'Ganhar',
+            workoutRoutine: 'Rotina de Treinos',
+            weeklyFrequency: 'Frequ\u00eancia Semanal',
+            preferredTime: 'Hor\u00e1rio Preferido',
+            preferredTimeDesc: 'Ajusta o timing dos carboidratos',
+            updateBiotype: 'Atualizar Biotipo',
+            currentWeight: 'Peso Atual',
+            bodyFat: 'Gordura Corporal',
+            planPreview: 'Preview do Plano',
+            aiOptimized: 'IA OTIMIZADA',
+            dailyGoal: 'Meta Di\u00e1ria',
+            protein: 'Prote\u00edna',
+            carbs: 'Carbo',
+            fats: 'Gordura',
+            generatePlan90: 'Gerar Plano (90 Dias)',
+        },
+        flowAdaptation: {
+            title: 'Flow Adaptation',
+            syncComplete: 'Sincroniza\u00e7\u00e3o Completa',
+            activityDetected: 'Atividade Detectada',
+            workoutType: 'Tipo de Treino',
+            duration: 'Dura\u00e7\u00e3o',
+            burned: 'queimados',
+            details: 'Detalhes',
+            kcalAdded: 'Kcal Adicionados',
+            addedMessage: 'Adicionamos <bold>+{kcal}kcal</bold> ao seu flow hoje com base na intensidade da atividade.',
+            carbs: 'Carbo',
+            protein: 'Prote\u00edna',
+            fat: 'Gordura',
+        },
         macros: {
             prot: 'Prot',
             carb: 'Carb',
@@ -1011,6 +1176,59 @@ export const translations: Record<Language, Translations> = {
             pending: 'Sincronización pendiente',
             disconnected: 'Desconectado',
             securityNote: 'Datos encriptados y sincronización segura',
+        },
+        planRenewal: {
+            header: 'Renovaci\u00f3n de Plan',
+            heroTitle: 'Un nuevo ciclo',
+            heroAccent: 'comienza ahora.',
+            heroSubtitle: 'Tu consistencia en el \u00faltimo trimestre fue inspiradora. Vamos a recalibrar tu Flow.',
+            consistency: 'Consistencia',
+            weeksCompleted: 'Semanas Completadas',
+            nextChapter: '\u00bfCu\u00e1l es el enfoque para el pr\u00f3ximo cap\u00edtulo?',
+            aesthetic: 'Est\u00e9tica',
+            aestheticDesc: 'Esculpir y definir',
+            health: 'Salud',
+            healthDesc: 'Longevidad y equilibrio',
+            performance: 'Rendimiento',
+            performanceDesc: 'Potencia y resistencia',
+            generatePlan: 'Generar Plan Personalizado',
+        },
+        refinePlan: {
+            title: 'Refinando el Flow',
+            adjustFlow: 'Ajusta tu Flow',
+            aiAnalysis: 'Nuestra IA analiz\u00f3 tus \u00faltimos 90 d\u00edas. El algoritmo sugiere un aumento de prote\u00edna para el pr\u00f3ximo ciclo. Aj\u00fastalo a tu preferencia.',
+            currentGoal: 'Objetivo Actual',
+            maintain: 'Mantener',
+            define: 'Definir',
+            gain: 'Ganar',
+            workoutRoutine: 'Rutina de Entrenamiento',
+            weeklyFrequency: 'Frecuencia Semanal',
+            preferredTime: 'Horario Preferido',
+            preferredTimeDesc: 'Ajusta el timing de carbohidratos',
+            updateBiotype: 'Actualizar Biotipo',
+            currentWeight: 'Peso Actual',
+            bodyFat: 'Grasa Corporal',
+            planPreview: 'Vista Previa del Plan',
+            aiOptimized: 'IA OPTIMIZADA',
+            dailyGoal: 'Meta Diaria',
+            protein: 'Prote\u00edna',
+            carbs: 'Carbo',
+            fats: 'Grasa',
+            generatePlan90: 'Generar Plan (90 D\u00edas)',
+        },
+        flowAdaptation: {
+            title: 'Flow Adaptation',
+            syncComplete: 'Sincronizaci\u00f3n Completa',
+            activityDetected: 'Actividad Detectada',
+            workoutType: 'Tipo de Entrenamiento',
+            duration: 'Duraci\u00f3n',
+            burned: 'quemados',
+            details: 'Detalles',
+            kcalAdded: 'Kcal A\u00f1adidos',
+            addedMessage: 'Hemos a\u00f1adido <bold>+{kcal}kcal</bold> a tu flow hoy basado en la intensidad de tu actividad.',
+            carbs: 'Carbo',
+            protein: 'Prote\u00edna',
+            fat: 'Grasa',
         },
         macros: {
             prot: 'Prot',
