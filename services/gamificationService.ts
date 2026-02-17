@@ -4,10 +4,10 @@ export type UserLevel = 'seed' | 'root' | 'stem' | 'flower' | 'fruit';
 
 export const LEVEL_THRESHOLDS = {
     seed: 0,
-    root: 7,
-    stem: 21,
-    flower: 60,
-    fruit: 100 // Top tier
+    root: 1000,
+    stem: 3000,
+    flower: 8000,
+    fruit: 20000 // XP based now
 };
 
 export interface GamificationStats {
@@ -15,20 +15,31 @@ export interface GamificationStats {
     longestStreak: number;
     totalFlowDays: number;
     level: UserLevel;
+    xp: number;
+}
+
+export interface Achievement {
+    id: string;
+    code: string;
+    title: string;
+    description: string;
+    icon_url: string;
+    xp_reward: number;
+    unlocked_at?: string; // If unlocked by user
 }
 
 export const GamificationService = {
 
-    // Calculate level based on flow days
-    calculateLevel(flowDays: number): UserLevel {
-        if (flowDays >= LEVEL_THRESHOLDS.fruit) return 'fruit';
-        if (flowDays >= LEVEL_THRESHOLDS.flower) return 'flower';
-        if (flowDays >= LEVEL_THRESHOLDS.stem) return 'stem';
-        if (flowDays >= LEVEL_THRESHOLDS.root) return 'root';
+    // Calculate level based on XP
+    calculateLevel(xp: number): UserLevel {
+        if (xp >= LEVEL_THRESHOLDS.fruit) return 'fruit';
+        if (xp >= LEVEL_THRESHOLDS.flower) return 'flower';
+        if (xp >= LEVEL_THRESHOLDS.stem) return 'stem';
+        if (xp >= LEVEL_THRESHOLDS.root) return 'root';
         return 'seed';
     },
 
-    // Calculate current streak based on flow_stats
+    // Calculate current streak based on flow_stats (client-side logic preserved for now)
     async calculateStreak(userId: string): Promise<number> {
         try {
             const { data: stats, error } = await supabase
@@ -79,13 +90,48 @@ export const GamificationService = {
         }
     },
 
+    // Check and unlock achievements
+    async checkAchievements(userId: string, currentStats: GamificationStats) {
+        // 1. Fetch all achievable outcomes
+        const { data: allAchievements } = await supabase.from('achievements').select('*');
+        if (!allAchievements) return;
+
+        // 2. Fetch already unlocked
+        const { data: unlocked } = await supabase.from('user_achievements').select('achievement_id').eq('user_id', userId);
+        const unlockedIds = new Set(unlocked?.map(u => u.achievement_id));
+
+        const newUnlocks: Achievement[] = [];
+
+        for (const achievement of allAchievements) {
+            if (unlockedIds.has(achievement.id)) continue;
+
+            let conditionMet = false;
+
+            if (achievement.condition_type === 'streak') {
+                if (currentStats.currentStreak >= achievement.condition_value) conditionMet = true;
+            }
+            // Add more conditions here (log_count, flow_score, etc.)
+
+            if (conditionMet) {
+                // Unlock!
+                await supabase.from('user_achievements').insert({
+                    user_id: userId,
+                    achievement_id: achievement.id
+                });
+                newUnlocks.push(achievement);
+            }
+        }
+
+        return newUnlocks; // Return to UI to show toast
+    },
+
     // Update user stats after a daily log is saved
-    async updateStats(userId: string): Promise<GamificationStats | null> {
+    async updateStats(userId: string): Promise<{ stats: GamificationStats, newUnlocks: Achievement[] } | null> {
         try {
             // 1. Calculate Streak
             const currentStreak = await this.calculateStreak(userId);
 
-            // 2. Fetch current profile to check longest streak
+            // 2. Fetch current profile
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
             if (!profile) return null;
 
@@ -99,24 +145,37 @@ export const GamificationService = {
                 .gte('flow_score', 75);
 
             const totalFlowDays = count || 0;
-            const level = this.calculateLevel(totalFlowDays);
 
-            // 4. Update Profile
+            // 4. Calculate XP (Simple Logic for now: 100xp per flow day + 10xp per log)
+            // Real logic requires separate xp_ledger table, but for MVP we estimate
+            const estimatedXP = (totalFlowDays * 100) + (profile.total_xp || 0); // Incremental update is better in future
+
+            const level = this.calculateLevel(estimatedXP);
+
+            // 5. Update Profile
             const { error: updateError } = await supabase.from('profiles').update({
                 current_streak: currentStreak,
                 longest_streak: longestStreak,
                 total_flow_days: totalFlowDays,
-                level: level
+                total_xp: estimatedXP,
+                level: level,
+                last_activity_date: new Date().toISOString()
             }).eq('id', userId);
 
             if (updateError) throw updateError;
 
-            return {
+            const stats: GamificationStats = {
                 currentStreak,
                 longestStreak,
                 totalFlowDays,
-                level
+                level,
+                xp: estimatedXP
             };
+
+            // 6. Check Achievements
+            const newUnlocks = await this.checkAchievements(userId, stats) || [];
+
+            return { stats, newUnlocks };
 
         } catch (e) {
             console.error("Gamification Sync Error", e);
@@ -124,12 +183,16 @@ export const GamificationService = {
         }
     },
 
-    async getLeaderboard() {
-        const { data: profiles } = await supabase
-            .from('profiles')
-            .select('display_name, avatar_url, level, total_flow_days, current_streak')
-            .order('total_flow_days', { ascending: false })
-            .limit(10);
-        return profiles || [];
+    async getUserAchievements(userId: string) {
+        const { data, error } = await supabase
+            .from('user_achievements')
+            .select('*, achievement:achievements(*)')
+            .eq('user_id', userId);
+
+        if (error) return [];
+        return data.map(d => ({
+            ...d.achievement,
+            unlocked_at: d.unlocked_at
+        }));
     }
 };

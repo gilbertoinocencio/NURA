@@ -44,8 +44,12 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
 
   const loadGameStats = async () => {
     if (!user) return;
-    const stats = await GamificationService.updateStats(user.id);
-    setGameStats(stats);
+    // We try to get stats from service, which updates them if needed, or fallback to profile
+    // Ideally we subscribe to realtime changes, but for now fetch on load
+    const result = await GamificationService.updateStats(user.id);
+    if (result) {
+      setGameStats(result.stats);
+    }
   };
 
   useEffect(() => {
@@ -146,6 +150,10 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
   const energyPercent = caloriePercent;
   const displayName = profile?.display_name || user?.email?.split('@')[0] || t.dashboard.defaultUser;
 
+  // Use profile level as fallback if gameStats is not yet loaded
+  const currentLevel = gameStats?.level || profile?.level || 'seed';
+  const currentStreak = gameStats?.currentStreak || profile?.current_streak || 0;
+
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-nura-bg dark:bg-background-dark font-display text-nura-main dark:text-white animate-fade-in transition-colors duration-300">
       <Confetti active={showConfetti} />
@@ -158,16 +166,16 @@ export const FlowDashboard: React.FC<FlowDashboardProps> = ({
               className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-nura-petrol/20 dark:border-primary/20"
               style={{ backgroundImage: `url("${USER_AVATAR}")` }}
             />
-            {gameStats?.currentStreak && gameStats.currentStreak > 0 && (
+            {currentStreak > 0 && (
               <div className="absolute -bottom-1 -right-1 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white dark:border-background-dark flex items-center gap-0.5 animate-pulse">
                 <span className="material-symbols-outlined text-[10px]">local_fire_department</span>
-                {gameStats.currentStreak}
+                {currentStreak}
               </div>
             )}
           </div>
           <div className="flex flex-col">
             <span className="text-xs text-nura-muted dark:text-slate-400 font-medium tracking-wide uppercase">
-              {gameStats ? `${t.dashboard.levelPrefix} ${getLevelLabel(gameStats.level)}` : t.dashboard.welcomeBack}
+              {`${t.dashboard.levelPrefix} ${getLevelLabel(currentLevel)}`}
             </span>
             <h2 className="text-nura-main dark:text-white text-lg font-bold leading-tight">{displayName}</h2>
           </div>

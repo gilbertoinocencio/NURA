@@ -18,12 +18,16 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
 
   useEffect(() => {
     if (user) {
-      GamificationService.updateStats(user.id).then(setGameStats);
+      GamificationService.updateStats(user.id).then((result) => {
+        if (result) {
+          setGameStats(result.stats);
+        }
+      });
     }
   }, [user]);
 
-  const consistency = gameStats ? Math.min(Math.round((gameStats.flowDays / Math.max(gameStats.flowDays + 5, 1)) * 100), 99) : 0;
-  const weeksCompleted = gameStats ? Math.floor(gameStats.flowDays / 7) : 0;
+  const consistency = gameStats ? Math.min(Math.round((gameStats.totalFlowDays / Math.max(gameStats.totalFlowDays + 5, 1)) * 100), 99) : 0;
+  const weeksCompleted = gameStats ? Math.floor(gameStats.totalFlowDays / 7) : 0;
 
   const goals = [
     { id: 'aesthetic', label: pr.aesthetic, desc: pr.aestheticDesc, icon: 'spa' },

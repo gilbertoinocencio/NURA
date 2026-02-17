@@ -1,3 +1,5 @@
+import { UserLevel } from './services/gamificationService';
+
 export interface MacroData {
   protein: number;
   carbs: number;
@@ -63,4 +65,26 @@ export interface AIResponse {
   items: MealItem[];
   confidence?: number;
   message?: string; // Mensagem motivacional do coach
+}
+
+export interface Profile {
+  id: string;
+  display_name?: string;
+  avatar_url?: string;
+  level?: UserLevel;
+  current_streak?: number;
+  longest_streak?: number;
+  total_flow_days?: number;
+  total_xp?: number;
+  target_calories?: number;
+  target_protein?: number;
+  target_carbs?: number;
+  target_fats?: number;
+  goal?: 'aesthetic' | 'health' | 'performance';
+  activity_level?: 'sedentary' | 'moderate' | 'intense';
+  weight?: number;
+  height?: number;
+  age?: number;
+  gender?: string;
+  body_fat?: number;
 }
