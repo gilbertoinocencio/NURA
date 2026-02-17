@@ -63,7 +63,35 @@ interface Message {
   content: any; // Text string or AIResponse object
 }
 
+// Helper for image resizing
+const resizeImage = (base64Str: string, maxWidth = 800): Promise<string> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return resolve(base64Str);
+
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxWidth) {
+        height *= maxWidth / width;
+        width = maxWidth;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', 0.7)); // Compress to JPEG 70%
+    };
+    img.onerror = () => resolve(base64Str);
+  });
+};
+
 export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
+  console.log('MealLogger: COMPONENT RENDERED');
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -137,6 +165,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
   };
 
   const handleSend = async () => {
+    console.log('MealLogger: handleSend called', { input });
     if (!input.trim()) return;
 
     const userMsg: Message = { id: Date.now().toString(), type: 'user', content: input };
@@ -177,16 +206,22 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
     setLoading(true);
     const reader = new FileReader();
     reader.onloadend = async () => {
-      const base64 = reader.result as string;
-      setScannedImageUri(base64);
+      let base64 = reader.result as string;
+
+      // Optimize image before sending
       try {
+        base64 = await resizeImage(base64);
+        setScannedImageUri(base64);
+
         const result = await analyzeImageLog(base64);
         setScanResult(result);
       } catch (err) {
         console.error("Scan failed", err);
-        // Fallback or error handling
+        alert("Erro ao analisar imagem. Tente novamente.");
       } finally {
         setLoading(false);
+        // Clear input value to allow re-selection
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
     };
     reader.readAsDataURL(file);
@@ -195,7 +230,11 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
 
 
   const handleConfirmLog = async (data: AIResponse, type: 'ai-chat' | 'ai-photo' | 'ai-voice') => {
-    if (!user) return;
+    console.log('MealLogger: Confirming log...', type);
+    if (!user) {
+      console.error('MealLogger: No user!');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -214,9 +253,13 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
         imageUri: type === 'ai-photo' && scannedImageUri ? scannedImageUri : undefined
       };
 
+      console.log('MealLogger: Calling MealService.logMeal...');
       await MealService.logMeal(newMeal, user.id);
+      console.log('MealLogger: Logged! Calling onLog...');
       onLog(newMeal); // Optimistic update / update parent state
+      console.log('MealLogger: Called onLog. Calling onClose...');
       onClose();
+      console.log('MealLogger: Called onClose.');
     } catch (error) {
       console.error('Failed to log meal:', error);
       alert(t.mealLogger.errorLogging);
@@ -226,6 +269,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    console.log('MealLogger: handleKeyDown', e.key);
     if (e.key === 'Enter' && !loading) {
       handleSend();
     }
@@ -520,6 +564,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
                 {/* Send/Camera Button */}
                 <button
                   onClick={() => {
+                    console.log('MealLogger: Send Button Clicked', { input });
                     if (input) {
                       handleSend();
                     } else {
@@ -546,3 +591,5 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
     </div>
   );
 };
+
+export default MealLogger;

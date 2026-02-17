@@ -3,6 +3,8 @@ import { AppView } from '../types';
 import { useLanguage } from '../i18n';
 import { useAuth } from '../contexts/AuthContext';
 import { GamificationService, GamificationStats } from '../services/gamificationService';
+import { generatePlanContent } from '../services/geminiService';
+import { supabase } from '../services/supabase';
 
 interface PlanRenewalProps {
   onBack: () => void;
@@ -15,6 +17,7 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
   const pr = t.planRenewal;
   const [selectedGoal, setSelectedGoal] = useState<string>(profile?.goal || 'aesthetic');
   const [gameStats, setGameStats] = useState<GamificationStats | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -35,12 +38,46 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
     { id: 'performance', label: pr.performance, desc: pr.performanceDesc, icon: 'bolt' },
   ];
 
+  const handleGeneratePlan = async () => {
+    if (!profile) return;
+    setIsGenerating(true);
+    try {
+      // 1. Generate Plan with Gemini
+      const plan = await generatePlanContent({
+        ...profile,
+        goal: selectedGoal
+      });
+
+      // 2. Save Plan (For now, we just update the profile targets, in future we save the whole JSON plan)
+      if (plan && user) {
+        await supabase.from('profiles').update({
+          goal: selectedGoal,
+          target_calories: plan.calories,
+          target_protein: plan.macros.protein,
+          target_carbs: plan.macros.carbs,
+          target_fats: plan.macros.fats
+        }).eq('id', user.id);
+
+        // Save full plan to local storage for the 'Plan' view to consume for now
+        localStorage.setItem('current_quarterly_plan', JSON.stringify(plan));
+      }
+
+      // 3. Navigate
+      onNavigate(AppView.HOME); // Or PLAN view
+    } catch (error) {
+      console.error("Plan Generation Failed", error);
+      alert(t.common?.error || "Error generating plan");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto overflow-x-hidden shadow-2xl bg-nura-bg dark:bg-background-dark font-display antialiased transition-colors duration-300 text-nura-main dark:text-white animate-fade-in">
 
       {/* Header */}
       <header className="flex items-center justify-between p-6 pt-8 pb-2 sticky top-0 z-30 bg-nura-bg/95 dark:bg-background-dark/95 backdrop-blur-sm">
-        <button onClick={onBack} className="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors group">
+        <button onClick={onBack} disabled={isGenerating} className="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors group">
           <span className="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
         </button>
         <div className="flex flex-col items-center">
@@ -127,11 +164,21 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
       {/* Bottom Action */}
       <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-nura-bg via-nura-bg/95 to-transparent dark:from-background-dark dark:via-background-dark/95 pt-12">
         <button
-          onClick={() => onNavigate(AppView.REFINE_PLAN)}
-          className="w-full bg-nura-petrol dark:bg-primary hover:brightness-110 text-white font-medium text-lg py-4 px-6 rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+          onClick={handleGeneratePlan}
+          disabled={isGenerating}
+          className="w-full bg-nura-petrol dark:bg-primary hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed text-white font-medium text-lg py-4 px-6 rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
         >
-          {pr.generatePlan}
-          <span className="material-symbols-outlined">arrow_forward</span>
+          {isGenerating ? (
+            <>
+              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              Gerando Plano...
+            </>
+          ) : (
+            <>
+              {pr.generatePlan}
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </>
+          )}
         </button>
       </div>
 

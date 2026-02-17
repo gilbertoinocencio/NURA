@@ -2,7 +2,16 @@ import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { AIResponse } from '../types';
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-const genAI = new GoogleGenerativeAI(apiKey);
+// Initialize lazily to prevent crash if API key is missing during module load
+let genAI: GoogleGenerativeAI | null = null;
+
+const getGenAI = () => {
+  if (!genAI) {
+    // Valid key or fallback to prevent crash (requests will fail/be mocked)
+    genAI = new GoogleGenerativeAI(apiKey || 'mock_key');
+  }
+  return genAI;
+};
 
 // Helper to clean JSON string if Markdown code blocks are present
 const cleanJsonString = (str: string) => {
@@ -20,7 +29,7 @@ export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
   console.log("Gemini Service: API Key present (Starts with " + apiKey.substring(0, 4) + ")");
 
   try {
-    const model = genAI.getGenerativeModel({
+    const model = getGenAI().getGenerativeModel({
       model: MODEL_NAME,
       generationConfig: {
         responseMimeType: "application/json",
@@ -87,7 +96,7 @@ export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> 
     const mimeType = base64Image.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)?.[1] || 'image/png';
     const data = base64Image.split(',')[1]; // Remove header
 
-    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+    const model = getGenAI().getGenerativeModel({ model: MODEL_NAME });
 
     const prompt = `You are NURA, a lifestyle nutrition coach. Identify the food in this image. 
     Return a STRICT JSON string with this structure:
@@ -123,7 +132,7 @@ export const generatePlanContent = async (profile: any): Promise<any> => {
   if (!apiKey) throw new Error("API Key missing");
 
   try {
-    const model = genAI.getGenerativeModel({
+    const model = getGenAI().getGenerativeModel({
       model: MODEL_NAME,
       generationConfig: { responseMimeType: "application/json" }
     });

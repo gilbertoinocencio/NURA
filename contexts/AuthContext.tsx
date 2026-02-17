@@ -23,6 +23,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // E2E Test Bypass
+        const e2eSession = localStorage.getItem('E2E_TEST_SESSION');
+        if (e2eSession) {
+            console.log('🔒 E2E Test Session Active');
+            const parsed = JSON.parse(e2eSession);
+            setSession(parsed);
+            setUser(parsed.user);
+            // Mock profile for E2E
+            setProfile({
+                id: parsed.user.id,
+                name: 'Test Agent',
+                goal: 'aesthetic',
+                level: 'seed',
+                total_xp: 100,
+                current_streak: 5,
+                target_calories: 2000,
+                target_protein: 150,
+                target_carbs: 200,
+                target_fats: 60
+            });
+            setLoading(false);
+            return;
+        }
+
         // Check active session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);

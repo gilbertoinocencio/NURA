@@ -10,6 +10,7 @@ import { StatsService } from './services/statsService';
 import { NotificationService } from './services/notificationService';
 
 // Lazy Load Non-Critical Views
+// import { MealLogger } from './components/MealLogger';
 const SocialFeed = React.lazy(() => import('./components/SocialFeed'));
 const MealLogger = React.lazy(() => import('./components/MealLogger'));
 const FoodGuide = React.lazy(() => import('./components/FoodGuide'));
