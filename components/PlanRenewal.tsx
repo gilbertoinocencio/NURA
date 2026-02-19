@@ -12,7 +12,7 @@ interface PlanRenewalProps {
 }
 
 export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, profile } = useAuth();
   const pr = t.planRenewal;
   const [selectedGoal, setSelectedGoal] = useState<string>(profile?.goal || 'aesthetic');
@@ -46,7 +46,7 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
       const plan = await generatePlanContent({
         ...profile,
         goal: selectedGoal
-      });
+      }, language);
 
       // 2. Save Plan (For now, we just update the profile targets, in future we save the whole JSON plan)
       if (plan && user) {
@@ -66,7 +66,7 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
       onNavigate(AppView.HOME); // Or PLAN view
     } catch (error) {
       console.error("Plan Generation Failed", error);
-      alert(t.common?.error || "Error generating plan");
+      alert(t.general.error);
     } finally {
       setIsGenerating(false);
     }
@@ -171,7 +171,7 @@ export const PlanRenewal: React.FC<PlanRenewalProps> = ({ onBack, onNavigate }) 
           {isGenerating ? (
             <>
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              Gerando Plano...
+              {t.quarterlyPlan.generating}
             </>
           ) : (
             <>

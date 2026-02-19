@@ -108,7 +108,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { t, speechLang } = useLanguage();
+  const { t, speechLang, language } = useLanguage();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
     setLoading(true);
 
     try {
-      const result = await analyzeTextLog(userMsg.content);
+      const result = await analyzeTextLog(userMsg.content, language);
 
       const aiTextMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -191,8 +191,8 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
       setMessages(prev => [...prev, aiTextMsg, aiCardMsg]);
       setDraftMeal(result);
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Erro desconhecido";
-      const errorMsg: Message = { id: Date.now().toString(), type: 'ai-text', content: `Erro técnico: ${errorMessage}. (Verifique o Console)` };
+      const errorMessage = e instanceof Error ? e.message : t.general.error;
+      const errorMsg: Message = { id: Date.now().toString(), type: 'ai-text', content: `${t.general.error}: ${errorMessage}` };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
       setLoading(false);
@@ -213,11 +213,11 @@ export const MealLogger: React.FC<MealLoggerProps> = ({ onLog, onClose }) => {
         base64 = await resizeImage(base64);
         setScannedImageUri(base64);
 
-        const result = await analyzeImageLog(base64);
+        const result = await analyzeImageLog(base64, language);
         setScanResult(result);
       } catch (err) {
         console.error("Scan failed", err);
-        alert("Erro ao analisar imagem. Tente novamente.");
+        alert(t.mealLogger.errorLogging);
       } finally {
         setLoading(false);
         // Clear input value to allow re-selection

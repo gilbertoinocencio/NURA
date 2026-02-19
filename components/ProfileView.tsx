@@ -209,7 +209,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
           </div>
           <h1 className="text-nura-main dark:text-white text-2xl font-bold leading-tight tracking-tight text-center">
-            {profile?.display_name || 'Usuário Nura'}
+            {profile?.display_name || t.dashboard.defaultUser}
           </h1>
           <p className="text-nura-muted dark:text-gray-400 text-sm font-medium mt-1">
             {profile?.goal ? t.profile.goals[profile.goal as keyof typeof t.profile.goals] : t.profile.defineProfile}

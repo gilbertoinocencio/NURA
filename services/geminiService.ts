@@ -20,7 +20,13 @@ const cleanJsonString = (str: string) => {
 
 const MODEL_NAME = "gemini-2.5-flash";
 
-export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
+const LANG_NAMES: Record<string, string> = {
+  pt: 'Portuguese (Brazilian)',
+  en: 'English',
+  es: 'Spanish'
+};
+
+export const analyzeTextLog = async (text: string, language: string = 'pt'): Promise<AIResponse> => {
   console.log("Gemini Service: Checking API Key...");
   if (!apiKey) {
     console.error("Gemini Service: API Key is MISSING or empty.");
@@ -66,14 +72,15 @@ export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
       }
     });
 
+    const langName = LANG_NAMES[language] || LANG_NAMES.pt;
     const prompt = `You are NURA, a lifestyle nutrition coach focused on consistency and flow. Analyze this food log: "${text}". 
     Return a JSON object with:
-    - foodName (string, overall summary name)
+    - foodName (string, overall summary name in ${langName})
     - calories (number, total)
     - macros (object with p, c, f as numbers for protein, carbs, fats in grams)
-    - items (array of objects with: name (string), quantity (string, e.g. '1 large', '100g'), calories (number))
-    - message (string, a short motivational phrase in Portuguese about maintaining the flow, e.g. "Boa escolha para manter o flow!", "Nutrindo seu potencial.", "Energia limpa para o seu dia.")
-    Approximate values if needed. Keep the tone encouraging and scientific but accessible.`;
+    - items (array of objects with: name (string in ${langName}), quantity (string, e.g. '1 large', '100g'), calories (number))
+    - message (string, a short motivational phrase in ${langName} about maintaining the flow)
+    Approximate values if needed. Keep the tone encouraging and scientific but accessible. ALL text responses MUST be in ${langName}.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -88,7 +95,7 @@ export const analyzeTextLog = async (text: string): Promise<AIResponse> => {
   }
 };
 
-export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> => {
+export const analyzeImageLog = async (base64Image: string, language: string = 'pt'): Promise<AIResponse> => {
   if (!apiKey) throw new Error("API Key missing");
 
   try {
@@ -98,15 +105,17 @@ export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> 
 
     const model = getGenAI().getGenerativeModel({ model: MODEL_NAME });
 
+    const langName = LANG_NAMES[language] || LANG_NAMES.pt;
     const prompt = `You are NURA, a lifestyle nutrition coach. Identify the food in this image. 
     Return a STRICT JSON string with this structure:
     { 
-      "foodName": string, 
+      "foodName": string (in ${langName}), 
       "calories": number, 
       "macros": { "p": number, "c": number, "f": number }, 
-      "items": [{ "name": string, "quantity": string, "calories": number }], 
-      "message": string (short motivational phrase in Portuguese) 
-    }`;
+      "items": [{ "name": string (in ${langName}), "quantity": string, "calories": number }], 
+      "message": string (short motivational phrase in ${langName}) 
+    }
+    ALL text responses MUST be in ${langName}.`;
 
     const result = await model.generateContent([
       prompt,
@@ -128,7 +137,7 @@ export const analyzeImageLog = async (base64Image: string): Promise<AIResponse> 
   }
 };
 
-export const generatePlanContent = async (profile: any): Promise<any> => {
+export const generatePlanContent = async (profile: any, language: string = 'pt'): Promise<any> => {
   if (!apiKey) throw new Error("API Key missing");
 
   try {
@@ -159,7 +168,7 @@ export const generatePlanContent = async (profile: any): Promise<any> => {
       
       Ensure the plan is scientifically tailored to the biotype and goal.
       Phase 2 should always be the "Flow" or "Construction" peak phase.
-      Language: Portuguese (PT-BR).
+      Language: ${LANG_NAMES[language] || LANG_NAMES.pt}. ALL text MUST be in this language.
     `;
 
     const result = await model.generateContent(prompt);
