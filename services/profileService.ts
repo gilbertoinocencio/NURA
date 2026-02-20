@@ -9,6 +9,10 @@ export interface ProfileUpdates {
     target_protein?: number;
     target_carbs?: number;
     target_fats?: number;
+    weight?: number;
+    height?: number;
+    age?: number;
+    gender?: 'male' | 'female';
 }
 
 export const ProfileService = {

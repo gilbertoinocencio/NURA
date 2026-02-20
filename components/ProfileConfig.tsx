@@ -35,6 +35,10 @@ export const ProfileConfig: React.FC<ProfileConfigProps> = ({ onBack, onFinish, 
             profile.activity_level === 'intense' ? 3 : 2
         );
       }
+      if (profile.weight) setWeight(profile.weight.toString());
+      if (profile.height) setHeight(profile.height.toString());
+      if (profile.age) setAge(profile.age.toString());
+      if (profile.gender) setGender(profile.gender);
     }
   }, [profile]);
 
@@ -63,7 +67,11 @@ export const ProfileConfig: React.FC<ProfileConfigProps> = ({ onBack, onFinish, 
         target_calories: targets.calories,
         target_protein: targets.protein,
         target_carbs: targets.carbs,
-        target_fats: targets.fats
+        target_fats: targets.fats,
+        weight: w,
+        height: h,
+        age: a,
+        gender
       };
 
       await updateProfile(updates);
