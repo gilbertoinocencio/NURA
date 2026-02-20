@@ -115,7 +115,7 @@ const App: React.FC = () => {
   }
 
   // Onboarding Flow: User exists but hasn't set up profile
-  if (!profile?.target_calories) {
+  if (!profile?.goal) {
     return (
       <Suspense fallback={<LoadingSpinner />}>
         <ProfileConfig
